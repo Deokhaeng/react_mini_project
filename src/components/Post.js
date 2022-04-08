@@ -1,13 +1,19 @@
 import React from "react";
 import Grid from "../elements/Grid";
+import Image from "../elements/Image";
+import Text from "../elements/Text";
 
 const Post = (props) => {
   return (
     <React.Fragment>
       <Grid padding="18px">
-        <div>user name / insert_dt / is_me (edit btn)</div>
+          <Text bold>{props.user_name}</Text>
+          <Text bold>{props.insert_dt}</Text>
+        {/* <div>user name / insert_dt / is_me (edit btn)</div> */}
       </Grid>
-      <Grid>img</Grid>
+      <Grid padding="20px">
+          <Image src={props.src}/>
+      </Grid>
       <Grid>title / contents</Grid>
     </React.Fragment>
   );
