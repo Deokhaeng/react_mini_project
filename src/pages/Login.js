@@ -8,10 +8,18 @@ import { actionCreators as userActions } from "../redux/modules/user"; // as는 
 
 const Login = (props) => {
   const dispatch = useDispatch();
-  console.log(getCookie("user_id"));
+  // console.log(getCookie("user_id"));
   const login = () => {
-    dispatch(userActions.loginAction({ user_name: "deokhaeng" }));
+    dispatch(userActions.loginAction(id, password));
   };
+  // console.log(document.cookie);
+
+  // const login = () => {
+  //   dispatch(userActions.loginAction({ user_name: "deokhaeng" }));
+  // };
+
+  const [id, setId] = React.useState("");
+  const [password, setPassword] = React.useState("");
   console.log(document.cookie);
 
   return (
@@ -45,16 +53,16 @@ const Login = (props) => {
               <Grid padding="16px 0px">
                 <Input
                   placeholder="아이디를 입력해주세요."
-                  _onChange={() => {
-                    console.log("아이디 입력했어!");
+                  _onChange={(e) => {
+                    setId(e.target.value);
                   }}
                 />
               </Grid>
               <Grid padding="16px 0px">
                 <Input
                   placeholder="패스워드 입력해주세요."
-                  _onChange={() => {
-                    console.log("패스워드 입력했어!");
+                  _onChange={(e) => {
+                    setPassword(e.target.value);
                   }}
                 />
               </Grid>

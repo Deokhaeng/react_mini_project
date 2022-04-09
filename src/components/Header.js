@@ -4,10 +4,23 @@ import { history } from "../redux/configureStore";
 
 import { useSelector, useDispatch } from "react-redux"; // 리덕스 훅, 스토어에 있는 값을 가져와서 쓸 수 있게 해줌.
 import { actionCreators as userActions } from "../redux/modules/user";
+import { deleteCookie } from "../shared/Cookie";
 
 const Header = (props) => {
   const dispatch = useDispatch();
-  const is_login = useSelector((state) => state.user.is_login);
+  const [is_login, setIsLogin] = React.useState(false);
+  console.log(is_login);
+  console.log(document.cookie);
+
+  React.useEffect(() => {
+    let cookie = document.cookie;
+    console.log(cookie);
+    if (cookie) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  });
 
   if (is_login) {
     return (
@@ -22,7 +35,9 @@ const Header = (props) => {
             <Button
               text="로그아웃"
               _onClick={() => {
-                dispatch(userActions.logOut());
+                dispatch(userActions.logoutAction());
+
+                // deleteCookie(is_login);
               }}
             ></Button>
           </Grid>

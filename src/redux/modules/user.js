@@ -1,5 +1,6 @@
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
+import axios from "axios";
 
 import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
 
@@ -20,11 +21,44 @@ const initialState = {
 };
 
 // Middleware Actions(미들웨어 액션)
-const loginAction = (user) => {
+const loginAction = (id, password) => {
   return function (dispatch, getState, { history }) {
-    console.log(history);
-    dispatch(logIn(user));
-    history.push("/main");
+    axios({
+      method: "post",
+      url: "https://reqres.in/api/login", // 테스트 api id : eve.holt@reqres.in / pw : cityslicka
+      data: {
+        email: id,
+        password: password,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        // dispatch(logIn(user))
+        // dispatch(
+        //   setUser({
+        //     email: res.data.id,
+        //   })
+        // );
+        const accessToken = res.data.token;
+        //쿠키에 토큰 저장
+        setCookie("is_login", `${accessToken}`);
+        document.location.href = "/main";
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  // return function (dispatch, getState, { history }) {
+  //   console.log(history);
+  //   dispatch(logIn(user));
+  //   history.push("/main");
+  // };
+};
+
+const logoutAction = () => {
+  return function (dispatch, { history }) {
+    dispatch(logOut());
+    document.location.href = "/main";
   };
 };
 
@@ -56,6 +90,7 @@ const actionCreators = {
   logOut,
   getUser,
   loginAction,
+  logoutAction,
 };
 
 export { actionCreators };
