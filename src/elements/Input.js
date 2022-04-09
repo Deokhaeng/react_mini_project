@@ -5,8 +5,8 @@ import { Text, Grid } from "./index";
 
 const Input = (props) => {
   const { label, placeholder, _onChange, type, multiLine, value } = props;
-  
-  if(multiLine){
+  //플레이스홀더, 라벨속성 지정가능, onChange:_onChange로 지정
+    if(multiLine){
     return (
       <Grid>
         {label && <Text margin="0px">{label}</Text>}

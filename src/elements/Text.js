@@ -6,9 +6,10 @@ const Text = (props) => {
     const {bold, color, size, children} = props;
     const styles = {bold, color, size,}
     return ( 
-
-        <React.Fragment {...styles}>
-            <Textbox>{children}</Textbox>
+        <React.Fragment>
+            <Textbox {...styles}>
+                {children}
+            </Textbox>
         </React.Fragment>
     )
 }
@@ -18,11 +19,11 @@ Text.defaultProps = {
     color : '#222831',
     size:'16px',
 }
-
+//텍스트박스:color, font-size, bold value 지정 가능
 const Textbox = styled.p`
 color : ${(props)=>props.color};
 font-size:${(props)=>props.size};
-font-weight: ${(props)=>props.bold? '600':'400'};
+font-weight: ${(props)=>props.bold};
 `
 
 export default Text;

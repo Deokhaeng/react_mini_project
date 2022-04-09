@@ -5,7 +5,6 @@ const Detail = (props) => {
     return (
         <React.Fragment>
             <Post />
-            <div>close</div>
         </React.Fragment>
     )
 }

@@ -20,7 +20,7 @@ Image.defaultProps = {
     src : "https://recipe1.ezmember.co.kr/cache/recipe/2016/10/07/f43063e718c49d85ddce4880e4a41fcd1.jpg",
     size : 120, 
 }
-
+//url 지정 가능
 const AspectOutter = styled.div`
     background-image: url('${(props)=>props.src}');
     background-size:cover;
