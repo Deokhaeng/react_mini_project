@@ -2,50 +2,52 @@ import React from "react";
 import styled from "styled-components";
 
 const Grid = (props) => {
-    
-  const { is_flex, width, margin, padding, bg, children, center, _onClick, is_column } = props;
-  // console.log(children)
-
-  const styles = {
-      is_flex: is_flex,
-      is_column: is_column,
-      width: width,
-      margin: margin,
-      padding: padding,
-      bg: bg,
-      center: center,
-      _onClick: _onClick,
-  };
-  
+  const {
+    is_flex,
+    margin_left,
+    margin_right,
+    width,
+    padding,
+    margin,
+    bg,
+    children,
+  } = props;
+  const styles = { is_flex, width, padding, margin, bg, margin_left, margin_right};
   return (
     <React.Fragment>
-      <GridBox {...styles} onClick={_onClick}>{children}</GridBox>
+      <GridBox {...styles}>{children}</GridBox>
     </React.Fragment>
   );
 };
 
 Grid.defaultProps = {
-  chidren: null,
+  children: null,
   is_flex: false,
+  margin_left: false,
+  margin_right: false,
   width: "100%",
   padding: false,
   margin: false,
   bg: false,
-  center: false,
-  _onClick: () => {},
-  is_column: false,
 };
-
+//그리드
+//width, padding, margin, bg-color, is_flex(가로정렬), margin_left(왼쪽 오토 마진) value지정 가능
 const GridBox = styled.div`
   width: ${(props) => props.width};
   height: 100%;
-  box-sizing: border-box; //총 넓이에 padding과 border를 포함하는가? //yes
-  ${(props) => (props.padding ? `padding: ${props.padding};` : "")}
-  ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
-  ${(props) => (props.bg ? `background-color: ${props.bg};` : "")}
-  ${(props) => (props.is_flex? `display: flex; align-items: center; justify-content: space-between; `: "")}
-  ${(props) => (props.is_column? `display: flex; flex-direction: column`: "")}
-  ${(props) => (props.center? `text-align: center`: "")}
+  box-sizing: border-box;
+
+  ${(props) => (props.padding ? `padding:${props.padding}` : "")}
+  ${(props) => (props.margin ? `margin:${props.margin}` : "")}
+  ${(props) => (props.bg ? `background-color:${props.bg}` : "")}
+
+  ${(props) =>
+    props.is_flex
+      ? `display: flex; align-items: center; justify-content:space-between;`
+      : ""}
+
+  ${(props) => (props.margin_left ? `margin-left:auto;` : "")}
+  ${(props) => (props.margin_right ? `margin-right:auto;` : "")}
 `;
 
 export default Grid;

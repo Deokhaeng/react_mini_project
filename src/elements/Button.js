@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-export const Button = (props) => {
-  const { text, _onClick, is_float, children, margin, width, padding, bg, color} = props;
+const Button = (props) => {
+  const { text, _onClick, is_float, children, margin, width, padding, border, right } = props;
 
   if (is_float) {
     return (
@@ -16,53 +16,57 @@ export const Button = (props) => {
     margin: margin,
     width: width,
     padding: padding,
-    bg: bg,
-    color: color,
+    border: border,
+    right: right,
   };
 
   return (
     <React.Fragment>
-      <ElButton {...styles} onClick={_onClick}>{text? text : children}</ElButton>
+      <ElButton {...styles} onClick={_onClick}>{text? text: children}</ElButton>
     </React.Fragment>
   );
 };
 
 Button.defaultProps = {
-  text: "텍스트",
+  text: false,
+  children: null,
   _onClick: () => {},
   is_float: false,
-  children: null,
   margin: false,
   width: '100%',
-  padding: "12px 0px",
-  bg: '#E9CFA5',
-  color: 'white',
+  padding: '12px 0px',
+  border: false,
 };
 
 const ElButton = styled.button`
   width: ${(props) => props.width};
-  background-color: ${(props)=> props.bg};
-  color: ${(props) => props.color};
-  padding: ${(props) => props.padding};
-  ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
+  background-color: #F1DDBF;
+  color: #212121;
+  padding: ${(props)=>props.padding};
   box-sizing: border-box;
   border: none;
+  ${(props) => (props.margin? `margin: ${props.margin};` : '')}
+  ${(props)=>props.right?`float: right`:''}
+  &:hover{
+    box-shadow: 0px 0px 3px 0px gray;
+  }
 `;
 
 const FloatButton = styled.button`
   width: 50px;
   height: 50px;
-  border:none;
-  border-radius: 50%;
-  background-color: #AF7AC5   ;
-  color: #fff;
+  background-color: #F1DDBF;
+  color: #525E75;
   box-sizing: border-box;
   font-size: 36px;
   font-weight: 800;
   position: fixed;
-  bottom: 10px;
+  bottom: 50px;
   right: 16px;
   text-align: center;
   vertical-align: middle;
+  border: #525E75;
+  border-radius: 50px;
 `;
+
 export default Button;

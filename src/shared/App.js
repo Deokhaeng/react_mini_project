@@ -1,25 +1,33 @@
 import React from "react";
+import { Route } from "react-router-dom";
+import { ConnectedRouter } from "connected-react-router";
+import { history } from "../redux/configureStore";
 
-import {Route} from "react-router-dom";
-import { ConnectedRouter } from 'connected-react-router';
-import { history } from '../redux/configureStore';
-import PostList from '../pages/PostList';
+// import Entrance from "../pages/Entrance";
+import Main from "../pages/Main";
+import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 import PostWrite from "../pages/PostWrite";
-import {Grid, Button} from '../elements'; 
 
+import Grid from "../elements/Grid";
 
 function App() {
   return (
-    <React.Fragment>
+    <>
       <Grid>
         <ConnectedRouter history={history}>
-          <Route path="/" exact component={PostList} />
-          <Route path="/write" exact component={PostWrite}/>
-          <Route path="/modify/:id" exact component={PostWrite}/>
-        </ConnectedRouter >
+          {/* <Route path="/" exact component={Entrance} /> */}
+
+          <Route path="/main">
+            <Main />
+          </Route>
+          <Route path="/login" exact component={Login} />
+          <Route path="/signup" exact component={Signup} />
+          <Route path="/write" exact component={PostWrite} />
+          <Route path="/modify" exact component={PostWrite}/>
+        </ConnectedRouter>
       </Grid>
-         <Button is_float text="+" _onClick={() => {history.push('/write');}}></Button>
-    </React.Fragment>
+    </>
   );
 }
 

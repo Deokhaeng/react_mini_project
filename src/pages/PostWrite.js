@@ -1,5 +1,6 @@
 import React from "react";
-import { Grid, Text, Button, Image, Input } from "../elements";
+import { MdClear } from "react-icons/md";
+import { Grid, Text, Button, Image, Input, Box } from "../elements";
 import Upload from "../shared/Upload";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -10,7 +11,7 @@ const PostWrite = (props) => {
   const { history } = props;
   const dispatch = useDispatch();
   // console.log(params.id) //수정 중이면 id값 나옴
-
+  // const is_login= useSelector((state)=> state.user.is_login);
   const preview = useSelector((state) => state.image.preview);
   // console.log(preview) //추가페이지에서 리덕스값 초기화!! 
   const post_list = useSelector((state) => state.post.list); //최종 리스트
@@ -21,14 +22,15 @@ const PostWrite = (props) => {
   // console.log(is_edit)
 
   let _post = is_edit ? post_list.find((p) => p.id === post_id) : null;
-  console.log(_post)  
+  // console.log(_post)  
+  const [title, setTitle] = React.useState(_post ? _post.title : "");
   const [contents, setContents] = React.useState(_post ? _post.contents : "");
   // console.log(contents)
 
   React.useEffect(() => {
     if (is_edit && !_post) {
       console.log("포스트 정보가 없어요!");
-      history.goBack();
+      history.replace('/main');
 
       return;
     }
@@ -44,11 +46,12 @@ const PostWrite = (props) => {
 
 
   const addPost = () => {
-    dispatch(postActions.addPost(contents));
+    dispatch(postActions.addpost(title, contents));
+    history.push('/main');
   };
 
   const editPost = () => {
-    dispatch(postActions.editPost(post_id, { contents: contents }));
+    dispatch(postActions.editpost(post_id, { contents: contents }));
   };
 
   // if (!is_login) {
@@ -71,14 +74,19 @@ const PostWrite = (props) => {
 
   return (
     <React.Fragment>
-      <Grid padding="16px">
+      <Box>
+        <Grid padding="16px"> 
+          <Grid margin='0% 0% 0% 95%'>
+            <MdClear size={30} onClick={()=>{history.push('/main')}}/> 
+          </Grid>
+          
         <Grid is_flex>
-          <Text margin="0px" size="36px" bold>
+          <Text size="30px" bold>
             {is_edit ? "게시글 수정" : "게시글 작성"}
           </Text>
         </Grid>
-
         <Upload />
+        
       </Grid>
     
       <Grid>
@@ -90,14 +98,25 @@ const PostWrite = (props) => {
 
         <Image
           shape="rectangle"
-          src={preview ? preview : "https://ifh.cc/g/yY4z3M.png"}
-        />
+          src={preview ? preview : "https://ifh.cc/g/GQnhw4.jpg"}
+        >
+          
+        </Image>
       </Grid>
       <Grid padding="16px">
         <Input
+          value={title}
+          label="게시글 제목"
+          placeholder="제목을 작성해 주세요."
+          _onChange={(e) => {
+            console.log("!!");
+            setTitle(e.target.value);
+          }}
+        />
+        <Input
           value={contents}
           label="게시글 내용"
-          placeholder="게시글 작성"
+          placeholder="내용을 작성해 주세요."
           multiLine
           _onChange={(e) => {
             console.log("!!");
@@ -113,6 +132,8 @@ const PostWrite = (props) => {
           <Button text="게시글 작성" _onClick={addPost}></Button>
         )}
       </Grid>
+      </Box>
+      
     </React.Fragment>
   );
 };
