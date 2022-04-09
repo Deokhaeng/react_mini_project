@@ -16,7 +16,7 @@ const Text = (props) => {
 
 Text.defaultProps = {
     bold : false,
-    color : '#222831',
+    color : '#F7F7F7',
     size:'16px',
 }
 //텍스트박스:color, font-size, bold value 지정 가능

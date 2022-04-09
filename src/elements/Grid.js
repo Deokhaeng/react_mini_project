@@ -2,8 +2,30 @@ import React from "react";
 import styled from "styled-components";
 
 const Grid = (props) => {
-  const { is_flex, margin_left, width, padding, margin, bg, children } = props;
-  const styles = { is_flex, width, padding, margin, bg, margin_left };
+  const {
+    is_flex,
+    margin_left,
+    fixed,
+    width,
+    padding,
+    margin,
+    bg,
+    top,
+    onscroll,
+    children,
+  } = props;
+
+  const styles = {
+    is_flex,
+    margin_left,
+    fixed,
+    width,
+    padding,
+    margin,
+    bg,
+    top,
+    onscroll,
+  };
   return (
     <React.Fragment>
       <GridBox {...styles}>{children}</GridBox>
@@ -14,17 +36,19 @@ const Grid = (props) => {
 Grid.defaultProps = {
   children: null,
   is_flex: false,
-  margin_left:false,
+  fixed: false,
+  margin_left: false,
   width: "100%",
   padding: false,
   margin: false,
+  top: false,
   bg: false,
 };
 //그리드
 //width, padding, margin, bg-color, is_flex(가로정렬), margin_left(왼쪽 오토 마진) value지정 가능
 const GridBox = styled.div`
   width: ${(props) => props.width};
-  height: 100%;
+  height: ${(props) => props.height};
   box-sizing: border-box;
 
   ${(props) => (props.padding ? `padding:${props.padding}` : "")}
@@ -36,9 +60,12 @@ const GridBox = styled.div`
       ? `display: flex; align-items: center; justify-content:space-between;`
       : ""}
 
-${(props) =>
-    props.margin_left
-      ? `margin-left:auto;`
+  ${(props) =>
+    props.fixed
+      ? `
+      position: fixed; 
+      top:0px; width:100%; 
+      margin:20px;`
       : ""}
 `;
 

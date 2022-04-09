@@ -8,19 +8,22 @@ const Post = (props) => {
   return (
     <React.Fragment>
       {/* Box:전체를 감싸는 카드박스 */}
-      <Box>
+      <Grid margin='60px 10% 60px 10%'>
+        <Box float margin='60px'>
         <Grid padding="3px" is_flex>
           <Text bold="700">{props.user_name}</Text>
           <Text>{props.createdAt}</Text>
         </Grid>
         <Grid>
-          <Image src={props.src} />
+          <Image src={props.src} is_contents />
         </Grid>
         <Grid>
           <Text bold="700">{props.title}</Text>
           <Text>{props.content}</Text>
         </Grid>
       </Box>
+      </Grid>
+      
     </React.Fragment>
   );
 };
