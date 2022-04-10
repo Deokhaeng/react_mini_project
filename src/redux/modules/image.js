@@ -17,7 +17,7 @@ const initialState = {
 };
 
 // reducer
-export default handleActions(
+export default handleActions( 
   {
     [UPLOAD_IMAGE]: (state, action) =>
       produce(state, (draft) => {

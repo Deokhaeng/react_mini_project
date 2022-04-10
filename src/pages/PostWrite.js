@@ -19,39 +19,39 @@ const PostWrite = (props) => {
   const post_id = props.match.params.id;
 
   const is_edit = post_id ? true : false;
-  // console.log(is_edit)
+  console.log(is_edit)
 
   let _post = is_edit ? post_list.find((p) => p.id === post_id) : null;
-  // console.log(_post)  
+
   const [title, setTitle] = React.useState(_post ? _post.title : "");
   const [contents, setContents] = React.useState(_post ? _post.contents : "");
   // console.log(contents)
 
   React.useEffect(() => {
-    if (is_edit && !_post) {
-      console.log("포스트 정보가 없어요!");
-      history.replace('/main');
+    // if (is_edit) {
+    //   console.log("포스트 정보가 없어요!");
+    //   history.replace('/main');
 
-      return;
-    }
+    //   return;
+    // }
 
     if (is_edit) { 
       //setPreview 링크 가져오자
-      dispatch(imageActions.setPreview(_post.image_url));
-    }else{
+      dispatch(imageActions.setPreview());
+    }else{  
       dispatch(imageActions.setPreview(null));
     }
-    
+
   }, []);
 
-
   const addPost = () => {
-    dispatch(postActions.addpost(title, contents));
+    dispatch(postActions.addPost(contents));
     history.push('/main');
   };
 
   const editPost = () => {
-    dispatch(postActions.editpost(post_id, { contents: contents }));
+    dispatch(postActions.editpost(title, contents));
+    history.push('/main')
   };
 
   // if (!is_login) {

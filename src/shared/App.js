@@ -24,7 +24,7 @@ function App() {
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
           <Route path="/write" exact component={PostWrite} />
-          <Route path="/modify" exact component={PostWrite}/>
+          <Route path="/modify/:id" exact component={PostWrite}/>
         </ConnectedRouter>
       </Grid>
     </>

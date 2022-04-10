@@ -1,12 +1,12 @@
 import axios from "axios";
-// import Cookies from './Cookie';
+import { getCookie } from "./Cookie";
 
 
 const instance = axios.create({
 	baseURL: "http://localhost:3000/user/auth", // 요청을 www.aa.com/user로 보낸다면, www.aa.com까지 기록
     timeout: 1000,
     headers: {
-        access_token: cookies.get('access_token'),
+        // access_token: cookies.get('access_token'),
       },
 });
 
@@ -18,7 +18,7 @@ instance.interceptors.request.use((config) => {
   config.headers['Content-Type'] = 'application/json; charset=utf-8';
   config.headers['X-Requested-With'] = 'XMLHttpRequest';
   config.headers['Accept'] = '*/*';
-  config.headers['authorization'] = `Bearer ${getToken()}`;
+  // config.headers['authorization'] = `Bearer ${getToken()}`;
   return config;
 });
 

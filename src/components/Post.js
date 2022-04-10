@@ -16,7 +16,7 @@ const Post = (props) => {
 
   const Delete = (e) => {
     e.stopPropagation();
-    dispatch(deleteActions.deletePostFB(props.id));
+    dispatch(deleteActions.deletePost(props.id));
   };
 
   return (

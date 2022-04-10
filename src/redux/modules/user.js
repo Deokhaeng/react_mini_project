@@ -1,18 +1,20 @@
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
+import instance from '../../shared/Request';
+import {history} from '../../redux/configureStore'
 
-import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
+import {setCookie, deleteCookie } from "../../shared/Cookie";
 
 // Action Types(액션 타입)
 const LOG_IN = "LOG_IN";
 const LOG_OUT = "LOG_OUT";
-const GET_USER = "GET_USER";
+const SET_USER = "SET_USER";
 
 // Action Creators(액션 생성 함수)
 const logIn = createAction(LOG_IN, (user) => ({ user }));
 const logOut = createAction(LOG_OUT, (user) => ({ user }));
-const getUser = createAction(GET_USER, (user) => ({ user }));
+const setUser = createAction(SET_USER, (user) => ({ user }));
 
 // InitialState
 const initialState = {
@@ -22,10 +24,11 @@ const initialState = {
 
 // Middleware Actions
 const loginAction = (id, password) => {
-  return function (dispatch, getState, { history }) {
+  return function (dispatch) {
     axios({
       method: "post",
-      url: "http://3.38.253.146/user/auth", // 테스트 api id : eve.holt@reqres.in / pw : cityslicka
+      // url: "http://3.38.253.146/user/auth", // 
+      url: "https://reqres.in/api/login",  //테스트 api id : eve.holt@reqres.in / pw : cityslicka 
       data: {
         email: id,
         password: password,
@@ -37,14 +40,35 @@ const loginAction = (id, password) => {
         const accessToken = res.data.token;
         //쿠키에 토큰 저장
         setCookie("is_login", `${accessToken}`);
-        document.location.href = "/main";
-        console.log(res)
+        
+        // document.location.href = "/main";
+        history.push('/')
+
+        
       })
       .catch((error) => {
         console.log(error);
       });
   };
 };
+
+const signupAction = (id, password) => {
+  return function (dispatch) {
+    axios({
+      method:'post',
+      url: "https://reqres.in/api/register", //테스트 api id : eve.holt@reqres.in / pw : pistol
+      data: {
+        email: id,
+        password: password,
+      },  
+    })
+    .then(res =>{
+      dispatch(setUser(id, password)) //
+      console.log(res)
+      // document.location.href = "/main"
+    })
+  };
+}
 
 const logoutAction = () => {
   return function (dispatch, { history }) {
@@ -70,7 +94,7 @@ export default handleActions(
         draft.user = null;
         draft.is_login = false;
       }),
-    [GET_USER]: (state, action) => produce(state, (draft) => {}),
+    [SET_USER]: (state, action) => produce(state, (draft) => {}),
   },
   initialState
 );
@@ -79,9 +103,10 @@ export default handleActions(
 const actionCreators = {
   logIn,
   logOut,
-  getUser,
+  setUser,
   loginAction,
   logoutAction,
+  signupAction,
 };
 
 export { actionCreators };

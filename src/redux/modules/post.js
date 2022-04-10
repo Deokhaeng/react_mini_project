@@ -1,6 +1,9 @@
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
+import { actionCreators as imageActions } from "./image";
+import moment from "moment";
+import { history } from "../configureStore";
 
 import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
 //Action
@@ -8,61 +11,64 @@ const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
 const EDIT_POST = "EDIT_POST";
 const DELETE_POST = "DELETE_POST";
+const LOADING = "LOADING";
 
 //Action creator
 const setPost = createAction(SET_POST, (post_list, paging) => ({
   post_list,
   paging,
 }));
-const addPost = createAction(ADD_POST, (post) => ({ post }));
-const editPost = createAction(EDIT_POST, (post_id, post) => ({
-  post_id,
-  post,
-}));
+const addPost = createAction(ADD_POST, (post) => ({post}));
+const editPost = createAction(EDIT_POST, (title, contents) => ({title, contents}));
 const deletePost = createAction(DELETE_POST, (post_id) => ({ post_id }));
+const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
 
 //initialStatef
 const initialState = {
   //리덕스가 사용할 initialState
-  ok: false,
-  result: [{
-    // id: id,
-    title: '만두만두만만세',
-    contents: "만두는 옆에서 코골면서 자는 중 ",
-    image_url: "https://ifh.cc/g/AOA4Wq.jpg",
-  }], //post_list가 아닌 이유? 이미 state.post.list로 가져올 거기 때문에 post는 생략!
-  is_loading: false, //지금 로딩 중이니?(가지고 오는 중이니?)??
+  list: [], //post_list가 아닌 이유? 이미 state.post.list로 가져올 거기 때문에 post는 생략!
+  // paging: { start: null, next: null, size: 3 }, //size: 몇 개 가져올거니?
+  is_loading: false, //지금 로딩 중이니?(가지고 오는 중이니?)
+};
+
+const initialPost = {
+  //게시글 하나당 기본적으로 들어갈 내용
+  img_url: "https://ifh.cc/g/AOA4Wq.jpg",
+  contents: "",
+  insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"), //알아서 이러한 형식으로 보여줌
+  comment_cnt: 0,
 };
 
 //Middleware
-const getpost = (id, title, contents, image_url) => {
-  return function (dispatch, getState, { history }) {
+const getpostAction = (id, title, contents, image_url) => {
+  return function (dispatch) {
     axios({
       method: "get",
-      url: '/user/main',
+      url: "https://reqres.in/api/unknown/2",
       data: {
-          id: id,
-          title: title,
-          contents: contents,
-          image_url: image_url,
-        }
+        id: id, 
+        name: title,
+        year: contents,
+        color: image_url,
+      },
     })
       .then((res) => {
-        console.log(res);
-        dispatch(setPost());
+        
 
-        const accessToken = res.data.token;
-        // 쿠키에 토큰 저장
-        getCookie("is_login", `${accessToken}`);
-        document.location.href = "/main";
+        dispatch(loading(true)); //
+        dispatch(setPost(id, title, contents, image_url)); //
+        console.log(res);
+
+        history.push('/main')
       })
       .catch((error) => {
         console.log(error);
       });
-}};
+  };
+};
 
-const addpost = (title, contents) => {
-  return function (dispatch, getState, { history }) {
+const addpostAction = (title, contents) => {
+  return function (dispatch) {
     axios({
       method: "post",
       url: "https://reqres.in/api/users",
@@ -72,13 +78,17 @@ const addpost = (title, contents) => {
       },
     })
       .then((res) => {
+        const _post = {
+                ...initialPost,
+                contents: contents,
+                insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"), //왜 또 넣니? => 만들어지는 시점이 필요해서
+                title: title, 
+              };
+        
+        dispatch(addPost(_post));
+        dispatch(imageActions.setPreview(null))
         console.log(res);
-        dispatch(addPost());
-
-        const accessToken = res.data.token;
-        // 쿠키에 토큰 저장
-        getCookie("is_login", `${accessToken}`);
-        document.location.href = "/main";
+        history.push('/main')
       })
       .catch((error) => {
         console.log(error);
@@ -86,23 +96,21 @@ const addpost = (title, contents) => {
   };
 };
 
-const editpost = (post) => {
-  return function (dispatch, getState, { history }) {
+const editpostAction = (title, contents) => {
+  return function (dispatch) {
     axios({
-      method: "post",
+      method: "patch",
       url: "https://reqres.in/api/users/2",
       data: {
-        name: post,
+        name: title,
+        job: contents,
       },
     })
       .then((res) => {
         console.log(res);
-        dispatch(editPost());
+        dispatch(editPost(title, contents));
 
-        const accessToken = res.data.token;
-        // 쿠키에 토큰 저장
-        getCookie("is_login", `${accessToken}`);
-        document.location.href = "/main";
+        history.push('/main')
       })
       .catch((error) => {
         console.log(error);
@@ -110,14 +118,14 @@ const editpost = (post) => {
   };
 };
 
-const deletepost = (post) => {
-  return function (dispatch, getState, { history }) {
+const deletepostAction = (post) => {
+  return function (dispatch) {
     axios({
       method: "delete",
       url: "https://reqres.in/api/users/2",
       data: {
         name: post,
-      }
+      },
     })
       .then((res) => {
         console.log(res);
@@ -126,7 +134,7 @@ const deletepost = (post) => {
         const accessToken = res.data.token;
         // 쿠키에 토큰 저장
         getCookie("is_login", `${accessToken}`);
-        document.location.href = "/main";
+        // document.location.href = "/main";
       })
       .catch((error) => {
         console.log(error);
@@ -161,10 +169,10 @@ export default handleActions(
         draft.is_loading = false;
       }),
     [ADD_POST]: (state, action) =>
-      produce(state, (draft) => {
+      produce(state, (draft) => { //
         draft.list.unshift(action.payload.post); //배열의 맨 앞에 붙이기
-        console.log(draft);
-        console.log(action.payload.post);
+        console.log(draft); 
+        console.log(action.payload.post); 
       }),
     [EDIT_POST]: (state, action) =>
       produce(state, (draft) => {
@@ -177,16 +185,21 @@ export default handleActions(
       produce(state, (draft) => {
         draft.list = draft.list.filter((p) => p.id !== action.payload.post_id); //배열을 반환
       }),
+    [LOADING]: (state, action) =>
+      produce(state, (draft) => {
+        draft.is_loading = action.payload.is_loading;
+      }),
   },
   initialState
 );
 
 //action export
 const actionCreators = {
-  getpost,
-  addpost,
-  editpost,
-  deletepost,
+  addPost,
+  getpostAction,
+  addpostAction,
+  editpostAction,
+  deletepostAction,
 };
 
 export { actionCreators };
