@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Header from "../components/Header";
 import Post from "../components/Post";
-// import { actionCreators as postActions } from "../redux/modules/post";
+import { actionCreators as postActions } from "../redux/modules/post";
 import { history } from "../redux/configureStore";
 
 import { Grid, Button } from "../elements";
@@ -14,12 +14,12 @@ const Main = (props) => {
 
   // const {history} = props;
 
-  // React.useEffect(() => {
-  //   if (post_list.length < 2) { //리스트에 길이가 있으면 getPost를 하지 않는다. => 이미 있던 리덕스 맨 앞에 추가가 됌. 
-  //     dispatch(postActions.getPost());
-  //   }
+  React.useEffect(() => {
+    if (post_list.length < 2) { //리스트에 길이가 있으면 getPost를 하지 않는다. => 이미 있던 리덕스 맨 앞에 추가가 됌. 
+      dispatch(postActions.getPostDB());
+    }
 
-  // }, []);
+  }, []);
 
   return (
     <>

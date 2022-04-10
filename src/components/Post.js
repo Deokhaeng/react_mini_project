@@ -6,8 +6,9 @@ import { actionCreators as deleteActions } from "../redux/modules/post";
 
 const Post = (props) => {
   const dispatch = useDispatch();
-  const is_login = useSelector((state) => state.user.is_login);
-  console.log(is_login);
+  
+  const post_list = useSelector((state) => state.post.list)
+  console.log(post_list)
 
   const onClick = (e) => {
     e.stopPropagation();
@@ -16,7 +17,7 @@ const Post = (props) => {
 
   const Delete = (e) => {
     e.stopPropagation();
-    dispatch(deleteActions.deletePost(props.id));
+    dispatch(deleteActions.deletepostAction(props.id));
   };
 
   return (
@@ -24,8 +25,8 @@ const Post = (props) => {
       <Grid padding="20px">
         <Grid is_flex width="auto">
           <Image shape="circle" src={props.src} />
-          <Text bold>{props.id}</Text>
-          <Text>{props.insert_dt}</Text>
+          <Text bold>{props.post_id}</Text>
+          <Text>{props.createAt}</Text>
         </Grid>
         <Grid is_flex width="auto" margin="0% 0% 0% 48%">
           {/* {props.is_me && ( */}
@@ -48,10 +49,10 @@ const Post = (props) => {
         </Grid>
         <Grid padding="16px" width="auto">
           <Text bold>{props.title}</Text>
-          <Text>{props.contents}</Text>
+          <Text>{props.content}</Text>
         </Grid>
         <Grid>
-          <Image shape="rectangle" src={props.image_url} />
+          <Image shape="rectangle" src={props.image} />
         </Grid>
       </Grid>
     </React.Fragment>
@@ -59,11 +60,12 @@ const Post = (props) => {
 };
 
 Post.defaultProps = {
-  id: "mandu31",
-  image_url: "https://ifh.cc/g/AOA4Wq.jpg",
+  id: '1',
+  post_id: "mandu31",
+  image: "https://ifh.cc/g/AOA4Wq.jpg",
   title: "토끼만만세",
-  contents: "왕귀여운 토끼",
-  insert_dt: "2022-04-01",
+  content: "왕귀여운 토끼",
+  createAt: "2022-04-01",
 };
 
 export default Post;

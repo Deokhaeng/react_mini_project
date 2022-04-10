@@ -28,7 +28,8 @@ const loginAction = (id, password) => {
     axios({
       method: "post",
       // url: "http://3.38.253.146/user/auth", // 
-      url: "https://reqres.in/api/login",  //테스트 api id : eve.holt@reqres.in / pw : cityslicka 
+      // url: "https://reqres.in/api/login",  //테스트 api id : eve.holt@reqres.in / pw : cityslicka 
+      url:'',
       data: {
         email: id,
         password: password,
@@ -36,7 +37,7 @@ const loginAction = (id, password) => {
     })
       .then((res) => {
         console.log(res);
-
+        // axios.defaults.headers.common['Authorization'] = `${token}`;
         const accessToken = res.data.token;
         //쿠키에 토큰 저장
         setCookie("is_login", `${accessToken}`);
@@ -52,7 +53,7 @@ const loginAction = (id, password) => {
   };
 };
 
-const signupAction = (id, password) => {
+const signupAction = (id, password, passwordCheck) => {
   return function (dispatch) {
     axios({
       method:'post',
@@ -61,6 +62,11 @@ const signupAction = (id, password) => {
         email: id,
         password: password,
       },  
+      // data: {
+      //   id: id,
+      //   password: password,
+      //   passwordCheck: passwordCheck,
+      // }, 
     })
     .then(res =>{
       dispatch(setUser(id, password)) //

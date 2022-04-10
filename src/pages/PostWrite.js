@@ -15,11 +15,12 @@ const PostWrite = (props) => {
   const preview = useSelector((state) => state.image.preview);
   // console.log(preview) //추가페이지에서 리덕스값 초기화!! 
   const post_list = useSelector((state) => state.post.list); //최종 리스트
+  console.log(post_list)
 
   const post_id = props.match.params.id;
 
   const is_edit = post_id ? true : false;
-  console.log(is_edit)
+  // console.log(is_edit)
 
   let _post = is_edit ? post_list.find((p) => p.id === post_id) : null;
 
@@ -45,13 +46,13 @@ const PostWrite = (props) => {
   }, []);
 
   const addPost = () => {
-    dispatch(postActions.addPost(contents));
+    dispatch(postActions.addPostDB(title, contents));
     history.push('/main');
   };
 
   const editPost = () => {
-    dispatch(postActions.editpost(title, contents));
-    history.push('/main')
+    dispatch(postActions.editpostAction(title, contents));
+    // history.push('/main')
   };
 
   // if (!is_login) {

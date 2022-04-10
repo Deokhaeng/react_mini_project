@@ -1,0 +1,15 @@
+{
+    "ok": true,
+    "result": [
+      {
+        "title": "신전떡볶이",
+        "content": "신전이 짱이지",
+        "image": "http://ui.ssgcdn.com/cmpt/banner/202103/2021032509540448772796294379_265.jpg"
+      },
+      {
+        "id": 2,
+        "name": "kim",
+        "age": 29
+      }
+    ]
+} 

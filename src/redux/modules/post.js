@@ -6,22 +6,25 @@ import moment from "moment";
 import { history } from "../configureStore";
 
 import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
+import { MdDocumentScanner } from "react-icons/md";
 //Action
 const SET_POST = "SET_POST";
+const GET_POST = "GET_POST";
 const ADD_POST = "ADD_POST";
 const EDIT_POST = "EDIT_POST";
 const DELETE_POST = "DELETE_POST";
-const LOADING = "LOADING";
+// const LOADING = "LOADING";
 
 //Action creator
-const setPost = createAction(SET_POST, (post_list, paging) => ({
-  post_list,
-  paging,
+const setPost = createAction(SET_POST, (post_list) => ({ post_list }));
+// const getPost = createAction(GET_POST, (post) => ({ post }));
+const addPost = createAction(ADD_POST, (post) => ({ post }));
+const editPost = createAction(EDIT_POST, (post_id, post) => ({
+  post_id,
+  post,
 }));
-const addPost = createAction(ADD_POST, (post) => ({post}));
-const editPost = createAction(EDIT_POST, (title, contents) => ({title, contents}));
 const deletePost = createAction(DELETE_POST, (post_id) => ({ post_id }));
-const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
+// const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
 
 //initialStatef
 const initialState = {
@@ -33,33 +36,28 @@ const initialState = {
 
 const initialPost = {
   //게시글 하나당 기본적으로 들어갈 내용
-  img_url: "https://ifh.cc/g/AOA4Wq.jpg",
-  contents: "",
-  insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"), //알아서 이러한 형식으로 보여줌
-  comment_cnt: 0,
+  title: "",
+  content: "",
+  image: "https://ifh.cc/g/AOA4Wq.jpg",
+  createAt: moment().format("YYYY-MM-DD"), //알아서 이러한 형식으로 보여줌
 };
 
 //Middleware
-const getpostAction = (id, title, contents, image_url) => {
+const getPostDB = () => {
   return function (dispatch) {
+    let post_list = [];
     axios({
       method: "get",
-      url: "https://reqres.in/api/unknown/2",
-      data: {
-        id: id, 
-        name: title,
-        year: contents,
-        color: image_url,
-      },
+      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/addpost",
     })
-      .then((res) => {
-        
+      .then((doc) => {
+        const _post = doc.data;
+        const post_list = {_post, id: doc.id}
 
-        dispatch(loading(true)); //
-        dispatch(setPost(id, title, contents, image_url)); //
-        console.log(res);
-
-        history.push('/main')
+        // dispatch(loading(true));
+        dispatch(setPost(post_list));
+        // console.log(res);
+        // console.log(post_list)
       })
       .catch((error) => {
         console.log(error);
@@ -67,36 +65,48 @@ const getpostAction = (id, title, contents, image_url) => {
   };
 };
 
-const addpostAction = (title, contents) => {
+const addPostDB = (title, content, image) => {
   return function (dispatch) {
+    let _post = {
+      ...initialPost,
+      title: title,
+      content: content,
+    };
     axios({
       method: "post",
-      url: "https://reqres.in/api/users",
-      data: {
-        name: title,
-        job: contents,
-      },
+      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/addpost",
+      data: _post,
     })
-      .then((res) => {
-        const _post = {
-                ...initialPost,
-                contents: contents,
-                insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"), //왜 또 넣니? => 만들어지는 시점이 필요해서
-                title: title, 
-              };
-        
-        dispatch(addPost(_post));
-        dispatch(imageActions.setPreview(null))
-        console.log(res);
+      .then((doc) => {
+        let post = { ..._post, id: doc.data.length + 1};
+        console.log(doc);
+        dispatch(addPost(post));
+        dispatch(imageActions.setPreview(null));
+
         history.push('/main')
       })
       .catch((error) => {
-        console.log(error);
+        console.log('포스트 작성 실패!', error);
       });
   };
 };
 
-const editpostAction = (title, contents) => {
+const getOnePostDB = (id) => {
+  return function (dispatch, getState, { history }) {
+    axios({
+      method: "get",
+      url: "",
+    }).then((doc) => {
+      console.log(doc);
+      if (!doc.data) {
+        return;
+      }
+      dispatch(setPost(id));
+    });
+  };
+};
+
+const editPostDB = (title, contents) => {
   return function (dispatch) {
     axios({
       method: "patch",
@@ -108,9 +118,10 @@ const editpostAction = (title, contents) => {
     })
       .then((res) => {
         console.log(res);
+        // const post = {...initialPost, title: title, contents: contents}
         dispatch(editPost(title, contents));
 
-        history.push('/main')
+        // history.push('/main')
       })
       .catch((error) => {
         console.log(error);
@@ -118,22 +129,17 @@ const editpostAction = (title, contents) => {
   };
 };
 
-const deletepostAction = (post) => {
+const deletePostDB = (post) => {
   return function (dispatch) {
     axios({
       method: "delete",
       url: "https://reqres.in/api/users/2",
-      data: {
-        name: post,
-      },
+      data: {},
     })
       .then((res) => {
         console.log(res);
         dispatch(deletePost());
 
-        const accessToken = res.data.token;
-        // 쿠키에 토큰 저장
-        getCookie("is_login", `${accessToken}`);
         // document.location.href = "/main";
       })
       .catch((error) => {
@@ -147,32 +153,33 @@ export default handleActions(
   {
     [SET_POST]: (state, action) =>
       produce(state, (draft) => {
-        draft.list.push(...action.payload.post_list); //원래 리스트를 post_list로 갈아끼울거야~~
+        draft.list = action.payload.post_list; //원래 리스트를 post_list로 갈아끼울거야~~
 
-        //추가된 아이디를 같이 넣어서 넘어올 수 도 있기 때문에 중복제거를 해주자!
-        draft.list = draft.list.reduce((acc, cur) => {
-          //포스트 하나의 아이디가 현재 가지고 있는 포스트의 아이디니?
-          if (acc.findIndex((a) => a.id == cur.id) === -1) {
-            //중복됐어
-            return [...acc, cur];
-          } else {
-            acc[acc.findIndex((a) => a.id == cur.id)] = cur; //최근걸로 덮어씌우자!
-            return acc;
-          }
-        }, []);
+        // //추가된 아이디를 같이 넣어서 넘어올 수 도 있기 때문에 중복제거를 해주자!
+        // draft.list = draft.list.reduce((acc, cur) => {
+        //   //포스트 하나의 아이디가 현재 가지고 있는 포스트의 아이디니?
+        //   if (acc.findIndex((a) => a.id == cur.id) === -1) {
+        //     //중복됐어
+        //     return [...acc, cur];
+        //   } else {
+        //     acc[acc.findIndex((a) => a.id == cur.id)] = cur; //최근걸로 덮어씌우자!
+        //     return acc;
+        //   }
+        // }, []);
 
-        if (action.payload.paging) {
-          //기본값 필요없음
-          draft.paging = action.payload.paging;
-        }
-
-        draft.is_loading = false;
+        // draft.is_loading = false;
+      }),
+    [GET_POST]: (state, action) =>
+      produce(state, (draft) => {
+        // console.log(action.payload.post);
+        draft.post = action.payload.post;
       }),
     [ADD_POST]: (state, action) =>
-      produce(state, (draft) => { //
+      produce(state, (draft) => {
+        //
         draft.list.unshift(action.payload.post); //배열의 맨 앞에 붙이기
-        console.log(draft); 
-        console.log(action.payload.post); 
+        // console.log(draft);
+        console.log(action.payload.post);
       }),
     [EDIT_POST]: (state, action) =>
       produce(state, (draft) => {
@@ -185,10 +192,10 @@ export default handleActions(
       produce(state, (draft) => {
         draft.list = draft.list.filter((p) => p.id !== action.payload.post_id); //배열을 반환
       }),
-    [LOADING]: (state, action) =>
-      produce(state, (draft) => {
-        draft.is_loading = action.payload.is_loading;
-      }),
+    // [LOADING]: (state, action) =>
+    //   produce(state, (draft) => {
+    //     draft.is_loading = action.payload.is_loading;
+    //   }),
   },
   initialState
 );
@@ -196,10 +203,11 @@ export default handleActions(
 //action export
 const actionCreators = {
   addPost,
-  getpostAction,
-  addpostAction,
-  editpostAction,
-  deletepostAction,
+  getPostDB,
+  addPostDB,
+  editPostDB,
+  deletePostDB,
+  getOnePostDB
 };
 
 export { actionCreators };
