@@ -10,17 +10,18 @@ const Login = (props) => {
   const dispatch = useDispatch();
   // console.log(getCookie("user_id"));
   const login = () => {
-    dispatch(userActions.loginAction(id, password));
+    if (!(userInfo.id && userInfo.password)) return;
+    dispatch(userActions.loginAction(userInfo));
   };
   // console.log(document.cookie);
 
   // const login = () => {
   //   dispatch(userActions.loginAction({ user_name: "deokhaeng" }));
   // };
-
-  const [id, setId] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  console.log(document.cookie);
+  const [userInfo, setUserInfo] = React.useState({ id: "", password: "" });
+  // const [user, setUser] = React.useState("");
+  // const [password, setPassword] = React.useState("");
+  // console.log(document.cookie);
 
   return (
     <>
@@ -53,16 +54,16 @@ const Login = (props) => {
               <Grid padding="16px 0px">
                 <Input
                   placeholder="아이디를 입력해주세요."
-                  _onChange={(e) => {
-                    setId(e.target.value);
+                  _onChange={(event) => {
+                    setUserInfo({ ...userInfo, id: event.target.value });
                   }}
                 />
               </Grid>
               <Grid padding="16px 0px">
                 <Input
                   placeholder="패스워드 입력해주세요."
-                  _onChange={(e) => {
-                    setPassword(e.target.value);
+                  _onChange={(event) => {
+                    setUserInfo({ ...userInfo, password: event.target.value });
                   }}
                 />
               </Grid>

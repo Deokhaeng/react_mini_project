@@ -2,16 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 const Grid = (props) => {
-  const { is_flex, width, margin, padding, bg, children, center } = props;
-
-  const styles = {
-    is_flex: is_flex,
-    width: width,
-    margin: margin,
-    padding: padding,
-    bg: bg,
-    center: center,
-  };
+  const { is_flex, margin_left, width, padding, margin, bg, children } = props;
+  const styles = { is_flex, width, padding, margin, bg, margin_left };
   return (
     <React.Fragment>
       <GridBox {...styles}>{children}</GridBox>
@@ -20,27 +12,75 @@ const Grid = (props) => {
 };
 
 Grid.defaultProps = {
-  chidren: null,
+  children: null,
   is_flex: false,
+  margin_left: false,
   width: "100%",
   padding: false,
   margin: false,
   bg: false,
-  center: false,
 };
-
+//그리드
+//width, padding, margin, bg-color, is_flex(가로정렬), margin_left(왼쪽 오토 마진) value지정 가능
 const GridBox = styled.div`
   width: ${(props) => props.width};
   height: 100%;
   box-sizing: border-box;
-  ${(props) => (props.padding ? `padding: ${props.padding};` : "")}
-  ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
-  ${(props) => (props.bg ? `background-color: ${props.bg};` : "")}
+  ${(props) => (props.padding ? `padding:${props.padding}` : "")}
+  ${(props) => (props.margin ? `margin:${props.margin}` : "")}
+  ${(props) => (props.bg ? `background-color:${props.bg}` : "")}
   ${(props) =>
     props.is_flex
-      ? `display: flex; align-items: center; justify-content: space-between; `
+      ? `display: flex; align-items: center; justify-content:space-between;`
       : ""}
-       ${(props) => (props.center ? `text-align: center;` : "")}
+${(props) => (props.margin_left ? `margin-left:auto;` : "")}
 `;
 
 export default Grid;
+
+// import React from "react";
+// import styled from "styled-components";
+
+// const Grid = (props) => {
+//   const { is_flex, width, margin, padding, bg, children, center } = props;
+
+//   const styles = {
+//     is_flex: is_flex,
+//     width: width,
+//     margin: margin,
+//     padding: padding,
+//     bg: bg,
+//     center: center,
+//   };
+//   return (
+//     <React.Fragment>
+//       <GridBox {...styles}>{children}</GridBox>
+//     </React.Fragment>
+//   );
+// };
+
+// Grid.defaultProps = {
+//   chidren: null,
+//   is_flex: false,
+//   width: "100%",
+//   padding: false,
+//   margin: false,
+//   bg: false,
+//   center: false,
+// };
+
+// const GridBox = styled.div`
+//   width: ${(props) => props.width};
+//   height: 100%;
+//   box-sizing: border-box;
+//   ${(props) => (props.padding ? `padding: ${props.padding};` : "")}
+//   ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
+//   ${(props) => (props.bg ? `background-color: ${props.bg};` : "")}
+//   ${(props) =>
+//     props.is_flex
+//       ? `display: flex; align-items: center; justify-content: space-between; `
+//       : ""}
+//        ${(props) => (props.center ? `text-align: center;` : "")}
+// `;
+
+// export default Grid;

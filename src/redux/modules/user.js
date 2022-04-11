@@ -1,16 +1,17 @@
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
+import instance from "../../common/axios";
 
-import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
+import { setCookie, deleteCookie } from "../../shared/Cookie";
 
 // Action Types(액션 타입)
-const LOG_IN = "LOG_IN";
 const LOG_OUT = "LOG_OUT";
 const GET_USER = "GET_USER";
+const SET_USER = "SET_USER";
 
 // Action Creators(액션 생성 함수)
-const logIn = createAction(LOG_IN, (user) => ({ user }));
+const logIn = createAction(SET_USER, (user) => ({ user }));
 const logOut = createAction(LOG_OUT, (user) => ({ user }));
 const getUser = createAction(GET_USER, (user) => ({ user }));
 
@@ -21,15 +22,17 @@ const initialState = {
 };
 
 // Middleware Actions(미들웨어 액션)
-const loginAction = (id, password) => {
+const loginAction = (userInfo) => {
   return function (dispatch, getState, { history }) {
     axios({
       method: "post",
-      url: "https://reqres.in/api/login", // 테스트 api id : eve.holt@reqres.in / pw : cityslicka
-      data: {
-        email: id,
-        password: password,
-      },
+      url: "http://3.38.253.146/user/auth",
+      contentType: "application/json",
+      // 테스트 api id : eve.holt@reqres.in / pw : cityslicka
+      data: JSON.stringify({
+        id: userInfo.id,
+        password: userInfo.password,
+      }),
     })
       .then((res) => {
         console.log(res);
@@ -42,11 +45,24 @@ const loginAction = (id, password) => {
         const accessToken = res.data.token;
         //쿠키에 토큰 저장
         setCookie("is_login", `${accessToken}`);
-        document.location.href = "/main";
+        // localStorage.setItem("token", accessToken);
+        history.push("/main");
       })
       .catch((error) => {
+        window.alert("로그인이 되지 않았습니다.");
         console.log(error);
       });
+    // instance
+    //   .post("/user/auth", { userInfo })
+    //   .then((res) => {
+    //     console.log(res);
+    //     dispatch(logIn(res));
+    //     localStorage.setItem("token", res.token);
+    //     history.push("/main");
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    // });
   };
   // return function (dispatch, getState, { history }) {
   //   console.log(history);
@@ -62,10 +78,119 @@ const logoutAction = () => {
   };
 };
 
+// const loginCheckDB = () => {
+//   return function (dispatch, getState, { history }) {
+//     const token = getCookie("is_login");
+//     axios({
+//       method: "post",
+//       url: "http://3.38.253.146/user/auth",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     })
+//       .then((res) => {
+//         dispatch(
+//           setUser({
+//             email: res.data.email,
+//             nickname: res.data.nickname,
+//           })
+//         );
+//       })
+//       .catch((error) => {
+//         console.log(error.code, error.message);
+//       });
+//   };
+// };
+
+// const IdCheck = (){
+
+//   console.log('Join.vue => IdCheck');
+//   console.log('Join.vue => IdCheck', this.member.userid);
+
+//   const url = `/member/idcheck?uid=${this.member.userid}`;
+//   const headers = {"Content-Type":"application/json"};
+//   const response = await this.axios.get(url, {headers:headers});
+//   console.log(response);
+
+//   if(response.data.result === 1){
+//       alert('중복된 아이디가 존재합니다.')
+//       this.$refs.id.focus();
+//       return false;
+//   }
+//   if(response.data.result === 0){
+//       alert('사용가능한 아이디입니다')
+//       this.$refs.pw.focus();
+//   }
+
+// }
+
+const signupDB = (id, password, password2) => {
+  return function (dispatch, getState, { history }) {
+    console.log(id, password);
+    axios({
+      method: "post",
+      url: "http://3.38.253.146/user/users",
+      data: {
+        id: id,
+        password: password,
+        passwordCheck: password2,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        // window.alert(res.data.result);
+        history.push("/main");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // console.log(id, password);
+    // console.log(id, password);
+    // instance
+    //   .post("/user/users", {
+    //     id: id,
+    //     password: password,
+    //     passwordCheck: password2,
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //     window.alert(res.data.result);
+    //     // history.push("/main");
+    //   })
+    //   .catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+
+    //     console.log(errorCode, errorMessage);
+    //   });
+    //   axios({
+    //     method: "post",
+    //     url: "http://3.38.253.146/user/users",
+    //     data: {
+    //       id: id,
+    //       password: password,
+    //       passwordCheck: password2,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       console.log(res);
+    //       window.alert(res.data.result);
+    //       // history.push("/main");
+    //     })
+    //     .catch((error) => {
+    //       const errorCode = error.code;
+    //       const errorMessage = error.message;
+
+    //       console.log(errorCode, errorMessage);
+    //     });
+    // };
+  };
+};
+
 // Reducer
 export default handleActions(
   {
-    [LOG_IN]: (state, action) =>
+    [SET_USER]: (state, action) =>
       produce(state, (draft) => {
         setCookie("is_login", "success");
         draft.user = action.payload.user;
@@ -91,6 +216,7 @@ const actionCreators = {
   getUser,
   loginAction,
   logoutAction,
+  signupDB,
 };
 
 export { actionCreators };

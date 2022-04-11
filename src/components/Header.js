@@ -20,12 +20,12 @@ const Header = (props) => {
     } else {
       setIsLogin(false);
     }
-  });
+  }, []);
 
   if (is_login) {
     return (
       <React.Fragment>
-        <Grid is_flex padding="0px 0px 0px 16px" bg="#212121">
+        {/* <Grid is_flex padding="0px 0px 0px 16px" bg="#212121">
           <Grid>
             <Text bold color="#ffffff" size="15px">
               {props.title}
@@ -41,13 +41,30 @@ const Header = (props) => {
               }}
             ></Button>
           </Grid>
+        </Grid> */}
+        <Grid>
+          <Grid is_flex>
+            <Text>랜선떡볶이단</Text>
+            <Grid margin_left>
+              <Button
+                width="80px"
+                text="로그아웃"
+                margin="3px"
+                _onClick={() => {
+                  dispatch(userActions.logoutAction());
+
+                  // deleteCookie(is_login);
+                }}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </React.Fragment>
     );
   }
   return (
     <React.Fragment>
-      <Grid is_flex padding="0px 0px 0px 16px" bg="#212121">
+      {/* <Grid is_flex padding="0px 0px 0px 16px" bg="#212121">
         <Grid>
           <Text bold color="#ffffff" size="15px">
             {props.title}
@@ -60,6 +77,31 @@ const Header = (props) => {
               history.push("/login");
             }}
           ></Button>
+        </Grid>
+      </Grid> */}
+      <Grid>
+        <Grid is_flex>
+          <Text>랜선떡볶이단</Text>
+          <Grid margin_left>
+            <Button
+              width="80px"
+              text="로그인"
+              margin="3px"
+              right
+              _onClick={() => {
+                history.push("/login");
+              }}
+            />
+            <Button
+              width="80px"
+              text="회원가입"
+              margin="3px"
+              right
+              _onClick={() => {
+                history.push("/signup");
+              }}
+            />
+          </Grid>
         </Grid>
       </Grid>
     </React.Fragment>
