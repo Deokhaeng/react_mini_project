@@ -14,7 +14,7 @@ const SET_USER = "SET_USER";
 // Action Creators(액션 생성 함수)
 const logIn = createAction(LOG_IN, (user) => ({ user }));
 const logOut = createAction(LOG_OUT, (user) => ({ user }));
-const setUser = createAction(SET_USER, (user) => ({ user }));
+const setUser = createAction(SET_USER, (id, password) => ({id, password}));
 
 // InitialState
 const initialState = {
@@ -32,6 +32,7 @@ const loginAction = (id, password) => {
       // url:'https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users',
       headers: {
         "Content-Type": `application/json`,
+        // Authorization: `Bearer ${doc.payload.accessToken}`
       },
       data: JSON.stringify({
         id: id,
@@ -40,16 +41,17 @@ const loginAction = (id, password) => {
     })
       .then((doc) => {
         console.log(doc);
-        // const token = doc.data.token
-        // axios.defaults.headers.common['Authorization'] = `${token}`;
+        // const accessToken = doc.data.token;
+        // console.log(accessToken)
+        // axios.defaults.headers.common['Authorization'] = `Bearer ${doc.data.token}`
         const accessToken = doc.data.token;
-        // 쿠키에 토큰 저장
+        // // 쿠키에 토큰 저장
         setCookie("is_login", `${accessToken}`);
 
-        dispatch(setUser(id, password))
+        dispatch(setUser(id, password));
 				// localStorage.setItem('is_login', doc.data.token);
         // document.location.href = "/main";
-        history.push('/main')
+        history.push('/main');
       })
       .catch((error) => {
         console.log('로그인 실패', error);
