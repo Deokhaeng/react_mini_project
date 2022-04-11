@@ -10,6 +10,7 @@ import { Grid, Button } from "../elements";
 const Main = (props) => {
   const dispatch = useDispatch();
   const post_list = useSelector((state) => state.post.list);
+  console.log(post_list)
   const user_info = useSelector((state) => state.user.user);
 
   // const {history} = props;
@@ -23,24 +24,24 @@ const Main = (props) => {
 
   return (
     <>
-      <Grid>
+      {/* <Grid>
         <Header />
-        {/* {post_list.map((p, idx) => {
+        {post_list.map((p, idx) => {
             //p: 모든 리스트
             if (p.user_info.user_id === user_info?.uid) {
-              return ( */}
+              return (
                 <Grid
                   bg="#ffffff"
                   margin="8px 0px"
-                  // key={p.id}
-                  // _onClick={() => {
-                  //   history.push(`/detail/${p.id}`);
-                  // }}
+                  key={p.id}
+                  _onClick={() => {
+                    history.push(`/detail/${p.id}`);
+                  }}
                 >
-                  <Post  />
-                  {/* key={p.id} {...p} is_me  */}
+                  <Post key={p.id} {...p} is_me />
+                  
                 </Grid>
-              {/* );
+                );
             } else {
               return (
                 <Grid
@@ -55,7 +56,7 @@ const Main = (props) => {
                 </Grid>
               );
             }
-          })} */}
+          })}
       </Grid>
       <Button
         is_float
@@ -63,7 +64,8 @@ const Main = (props) => {
         _onClick={() => {
           history.push("/write");
         }}
-      ></Button>
+      ></Button> */}
+      {post_list.map((post, idx) => { return <Post ket={post.id} {...post} />; })}
     </>
   );
 };

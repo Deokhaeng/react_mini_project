@@ -16,7 +16,7 @@ const DELETE_POST = "DELETE_POST";
 // const LOADING = "LOADING";
 
 //Action creator
-const setPost = createAction(SET_POST, (post_list) => ({ post_list }));
+const setPost = createAction(SET_POST, (_post) => ({ _post }));
 // const getPost = createAction(GET_POST, (post) => ({ post }));
 const addPost = createAction(ADD_POST, (post) => ({ post }));
 const editPost = createAction(EDIT_POST, (post_id, post) => ({
@@ -48,19 +48,20 @@ const getPostDB = () => {
     let post_list = [];
     axios({
       method: "get",
-      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/addpost",
+      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
     })
       .then((doc) => {
+        console.log(doc)
         const _post = doc.data;
-        const post_list = {_post, id: doc.id}
+        console.log(_post)
 
         // dispatch(loading(true));
-        dispatch(setPost(post_list));
+        dispatch(setPost(_post));
         // console.log(res);
         // console.log(post_list)
       })
       .catch((error) => {
-        console.log(error);
+        console.log('에러났다!', error);
       });
   };
 };
@@ -74,7 +75,7 @@ const addPostDB = (title, content, image) => {
     };
     axios({
       method: "post",
-      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/addpost",
+      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
       data: _post,
     })
       .then((doc) => {
@@ -153,7 +154,7 @@ export default handleActions(
   {
     [SET_POST]: (state, action) =>
       produce(state, (draft) => {
-        draft.list = action.payload.post_list; //원래 리스트를 post_list로 갈아끼울거야~~
+        draft.list = action.payload._post; //원래 리스트를 post_list로 갈아끼울거야~~
 
         // //추가된 아이디를 같이 넣어서 넘어올 수 도 있기 때문에 중복제거를 해주자!
         // draft.list = draft.list.reduce((acc, cur) => {
