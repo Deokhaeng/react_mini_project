@@ -9,6 +9,7 @@ const Signup = (props) => {
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [passwordCheck, setPasswordCheck] = React.useState('')
+  
   // const [user_name, setUserName] = React.useState('');
   // const [pwd_check, setPwdCheck] = React.useState('');
 

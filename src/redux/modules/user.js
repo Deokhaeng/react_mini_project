@@ -27,7 +27,7 @@ const loginAction = (id, password) => {
   return function (dispatch) {
     axios({
       method: "post",
-      url: "http://3.38.253.146/user/auth", //
+      url: "http://3.38.253.146/api/user/auth", //
       // url: "https://reqres.in/api/login",  //테스트 api id : eve.holt@reqres.in / pw : cityslicka 
       // url:'https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users',
       headers: {
@@ -60,10 +60,11 @@ const loginAction = (id, password) => {
 };
 
 const signupAction = (id, password, passwordCheck) => {
+  console.log(id, password, passwordCheck)
   return function (dispatch) {
     axios({
       method:'post',
-      url: "http://3.38.253.146/user/users", //테스트 api id : eve.holt@reqres.in / pw : pistol
+      url: "http://3.38.253.146/api/user/users", //테스트 api id : eve.holt@reqres.in / pw : pistol
       headers: {
         "Content-Type": `application/json`,
       },

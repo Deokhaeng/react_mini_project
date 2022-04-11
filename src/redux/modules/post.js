@@ -43,9 +43,8 @@ const initialPost = {
 };
 
 //Middleware
-const getPostDB = () => {
-  return function (dispatch, getState, {history}) {
-    let post_list = [];
+const getPostDB = () => { 
+  return function (dispatch, getState, {history}) { //form타입 
     axios({
       method: "get",
       // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
@@ -70,25 +69,26 @@ const getPostDB = () => {
   };
 };
 
-const addPostDB = (title, content, createAt) => {
-  return function (dispatch) {
+const addPostDB = (title, content) => {
+  return function (dispatch, getState, {history}) {
     let _post = {
       ...initialPost,
       title: title,
       content: content,
-      createdAt: createAt,
+      createdAt: moment().format('YYYY-MM-DD')
     };
     axios({
       method: "post",
       // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
       url: "http://3.38.253.146/write_modify/user/postadd",
       data: _post,
+      // headers: { "Content-Type": "multipart/form-data", Authorization: localStorage.getItem("access_token")}
     })
       .then((doc) => {
-        let post = { ..._post, id: doc.data.length + 1};
+        // let post = { ..._post, id: doc.data.length + 1};
         console.log(doc);
         dispatch(addPost(_post));
-        dispatch(imageActions.setPreview(null));
+        // dispatch(imageActions.setPreview(null));
 
         history.push('/main')
       })
@@ -98,17 +98,18 @@ const addPostDB = (title, content, createAt) => {
   };
 };
 
-const getOnePostDB = (id) => {
+const getOnePostDB = (_id) => {
   return function (dispatch, getState, { history }) {
     axios({
       method: "get",
-      url: "",
+      url: `http://3.38.253.146/write_modify/user/detail/${_id}`,
     }).then((doc) => {
       console.log(doc);
       if (!doc.data) {
         return;
       }
-      dispatch(setPost(id));
+      const post = doc.data;
+      dispatch(setPost(post));
     });
   };
 };
@@ -117,7 +118,7 @@ const editPostDB = (title, contents) => {
   return function (dispatch) {
     axios({
       method: "patch",
-      url: "http://3.38.253.146/write_modify/user/postedit",
+      url: "http://3.38.253.146/write_modify/user/postmodify/:post_id",
       data: {
         name: title,
         job: contents,
@@ -130,22 +131,23 @@ const editPostDB = (title, contents) => {
 
         // history.push('/main')
       })
-      .catch((error) => {
+      .catch((error) => { 
         console.log(error);
       });
   };
 };
 
-const deletePostDB = (post) => {
+const deletePostDB = (_id) => {
   return function (dispatch) {
     axios({
       method: "delete",
-      url: "https://reqres.in/api/users/2",
-      data: {},
+      url: `http://3.38.253.146/write_modify/user/delete/${_id}`,
+      data: {_id},
     })
       .then((res) => {
         console.log(res);
-        dispatch(deletePost());
+  
+        dispatch(deletePost(_id));
 
         // document.location.href = "/main";
       })

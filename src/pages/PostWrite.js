@@ -13,20 +13,22 @@ const PostWrite = (props) => {
   // console.log(params.id) //수정 중이면 id값 나옴
   // const is_login= useSelector((state)=> state.user.is_login);
   const preview = useSelector((state) => state.image.preview);
-  // console.log(preview) //추가페이지에서 리덕스값 초기화!! 
+  // console.log(preview) //추가페이지에서 리덕스값 초기화!! //확인완료
   const post_list = useSelector((state) => state.post.list); //최종 리스트
   console.log(post_list)
 
-  const post_id = props.match.params.id;
+  const post_id = props.match.params.id; 
+  console.log(post_id) //확인완료 
 
   const is_edit = post_id ? true : false;
   console.log(is_edit)
 
-  let _post = is_edit ? post_list.find((p) => p.id === post_id) : null;
-  console.log(_post)
+  let _post = is_edit ? post_list.find((p) => p._id === post_id) : null;
+  console.log(_post) //확인완료 
 
   const [title, setTitle] = React.useState(_post ? _post.title : "");
-  const [contents, setContents] = React.useState(_post ? _post.contents : "");
+  console.log(title) //value로 안들어옴 ㅜ 
+  const [content, setContent] = React.useState(_post ? _post.content : "");
   // console.log(contents)
 
   React.useEffect(() => {
@@ -39,7 +41,7 @@ const PostWrite = (props) => {
 
     if (is_edit) { 
       //setPreview 링크 가져오자
-      dispatch(imageActions.setPreview(_post));
+      dispatch(imageActions.setPreview(_post.image)); //맞는디??
     }else{  
       dispatch(imageActions.setPreview(null));
     }
@@ -47,15 +49,39 @@ const PostWrite = (props) => {
   }, []);
 
   const addPost = () => {
-    dispatch(postActions.addPostDB(title, contents));
+    dispatch(postActions.addPostDB(title, content));
     history.push('/main');
   };
 
   const editPost = () => {
-    dispatch(postActions.editpostAction(title, contents));
+    dispatch(postActions.editPostDB(title, content));
     // history.push('/main')
   };
 
+  // const fileUploadHandler = (title, content) => {
+  //   if (!fileInput.current || fileInput.current.files.length === 0) {
+  //         window.alert("파일을 선택해주세요!");
+  //         return;
+  //   }
+  //   const file = fileInput.current.files[0];
+
+  //   const formData = new FormData();
+
+  //   formData.append('image', file);
+  //   formData.append('title', title);
+  //   formData.append('content', content);
+  //   console.log('formData', formData);
+
+  //   return(
+  //     axios({
+  //     method: "post",
+  //     url: 'http://3.38.253.146/write_modify/user/postadd',
+  //     data: formData,
+  //     headers: { "Content-Type": "multipart/form-data", Authorization: localStorage.getItem("access_token") }
+  //   })
+  //   )
+  // };
+  
   // if (!is_login) {
   //   return (  
   //     <Grid margin="100px 0px" padding="16px" center>
@@ -100,14 +126,14 @@ const PostWrite = (props) => {
 
         <Image
           shape="rectangle"
-          src={preview ? preview : "https://ifh.cc/g/g0oyvr.png"}
+          src={preview ? preview : "https://ifh.cc/g/g0oyvr.png"} //안가져와짐...
         >
           
         </Image>
       </Grid>
       <Grid padding="16px">
         <Input
-          value={title}
+          value={title} //왜 안와?ㅜ
           label="게시글 제목"
           placeholder="제목을 작성해 주세요."
           _onChange={(e) => {
@@ -116,13 +142,13 @@ const PostWrite = (props) => {
           }}
         />
         <Input
-          value={contents}
+          value={content}
           label="게시글 내용"
           placeholder="내용을 작성해 주세요."
           multiLine
           _onChange={(e) => {
             console.log("!!");
-            setContents(e.target.value);
+            setContent(e.target.value);
           }}
         />
       </Grid>

@@ -12,12 +12,13 @@ const Post = (props) => {
 
   const onClick = (e) => {
     e.stopPropagation();
-    history.push(`/modify/${props.id}`);
+    history.push(`/modify/${props._id}`);
   };
 
   const Delete = (e) => {
     e.stopPropagation();
-    dispatch(deleteActions.deletepostAction(props.id));
+    dispatch(deleteActions.deletePostDB(props.post_id));
+    console.log(props.id)
   };
 
   return (
