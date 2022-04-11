@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.1.10",
     "connected-react-router": "^6.8.0",
     "history": "^4.10.1",
+    "http-proxy-middleware": "^2.0.4",
     "immer": "^8.0.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
@@ -49,4 +50,5 @@
       "last 1 safari version"
     ]
   }
+  ,
 }

@@ -14,8 +14,8 @@ const Image = (props) => {
 if(is_contents){
      return (
         <React.Fragment>
-            <AspectOutter>
-                <AspectInner {...styles}></AspectInner>
+            <AspectOutter {...styles}>
+                <AspectInner></AspectInner>
             </AspectOutter>
         </React.Fragment>
     )
@@ -36,7 +36,7 @@ Image.defaultProps = {
 //url 지정 가능
 const AspectOutter = styled.div`
     background-image: url('${(props)=>props.src}');
-    background-size:cover;
+    background-size: cover;
     width: ${(props)=>props.width};
     height: ${(props)=>props.height};
 `

@@ -13,6 +13,7 @@ const Grid = (props) => {
     top,
     onscroll,
     children,
+    _onClick,
   } = props;
 
   const styles = {
@@ -25,10 +26,11 @@ const Grid = (props) => {
     bg,
     top,
     onscroll,
+    _onClick,
   };
   return (
     <React.Fragment>
-      <GridBox {...styles}>{children}</GridBox>
+      <GridBox {...styles} onClick={_onClick}>{children}</GridBox>
     </React.Fragment>
   );
 };

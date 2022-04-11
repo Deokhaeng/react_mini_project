@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Button = (props) => {
-  const { text, _onClick, is_float, children, margin, width, padding, border, right } = props;
+  const { text, _onClick, is_float, is_delete, children, margin, width, padding, border, right } = props;
 
   if (is_float) {
     return (
@@ -10,6 +10,13 @@ const Button = (props) => {
         <FloatButton onClick={_onClick}>{text? text : children}</FloatButton>
       </React.Fragment>
     );
+  }
+  if(is_delete){
+    return(
+      <React.Fragment>
+        <DeleteButton onClick={_onClick}>{text? text : children}</DeleteButton>
+      </React.Fragment>
+    )
   }
 
   const styles = {
@@ -64,6 +71,23 @@ const FloatButton = styled.button`
   vertical-align: middle;
   border: #525E75;
   border-radius: 50px;
+`;
+
+const DeleteButton = styled.button`
+  width: 40px;
+  height: 20px;
+  background-color: #FFE05D;
+  color: #525E75;
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 800;
+  position: fixed;
+  bottom: 50vh;
+  right: 16px;
+  text-align: center;
+  vertical-align: middle;
+  border: #525E75;
+  border-radius: 50x;  
 `;
 
 export default Button;
