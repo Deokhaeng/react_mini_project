@@ -11,11 +11,18 @@ const Signup = (props) => {
   const [id, setId] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [password2, setPasswordCheck] = React.useState("");
+  const [idConfirm, setIdConfirm] = React.useState("");
+  const [pwdConfirm, setPwdConfirm] = React.useState("");
+  const [pwdCheckConfirm, setPwdCheckConfirm] = React.useState("");
+  const [idWarning, setIdWarColor] = React.useState("red");
+  const [pwdWarning, setPwdWarColor] = React.useState("red");
+  const [pwdCheckWarning, setPwdCheckWarColor] = React.useState("red");
+
   // const [user_name, setUserName] = React.useState("");
 
   const signup = () => {
     if (id === "" || password === "") {
-      window.alert("아이디, 패스워드, 닉네임을 모두 입력해주세요!");
+      window.alert("아이디, 패스워드, 모두 입력해주세요!");
       return;
     }
 
@@ -42,6 +49,7 @@ const Signup = (props) => {
               setId(e.target.value);
             }}
           />
+
           <Button>중복확인</Button>
         </Grid>
 

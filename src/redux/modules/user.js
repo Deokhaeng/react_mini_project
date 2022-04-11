@@ -1,7 +1,6 @@
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
-import instance from "../../common/axios";
 
 import { setCookie, deleteCookie } from "../../shared/Cookie";
 
@@ -24,57 +23,58 @@ const initialState = {
 // Middleware Actions(미들웨어 액션)
 const loginAction = (userInfo) => {
   return function (dispatch, getState, { history }) {
-    axios({
-      method: "post",
-      url: "http://3.38.253.146/user/auth",
-      contentType: "application/json",
-      // 테스트 api id : eve.holt@reqres.in / pw : cityslicka
-      data: JSON.stringify({
-        id: userInfo.id,
-        password: userInfo.password,
-      }),
-    })
+    axios
+      .post(
+        "http://3.38.253.146/api/user/auth",
+        JSON.stringify({ id: userInfo.id, password: userInfo.password }),
+        { headers: { "Content-Type": `application/json` } }
+      )
       .then((res) => {
         console.log(res);
-        // dispatch(logIn(user))
-        // dispatch(
-        //   setUser({
-        //     email: res.data.id,
-        //   })
-        // );
         const accessToken = res.data.token;
         //쿠키에 토큰 저장
         setCookie("is_login", `${accessToken}`);
-        // localStorage.setItem("token", accessToken);
         history.push("/main");
       })
       .catch((error) => {
         window.alert("로그인이 되지 않았습니다.");
         console.log(error);
       });
-    // instance
-    //   .post("/user/auth", { userInfo })
-    //   .then((res) => {
-    //     console.log(res);
-    //     dispatch(logIn(res));
-    //     localStorage.setItem("token", res.token);
-    //     history.push("/main");
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    // });
   };
-  // return function (dispatch, getState, { history }) {
-  //   console.log(history);
-  //   dispatch(logIn(user));
-  //   history.push("/main");
-  // };
 };
 
 const logoutAction = () => {
   return function (dispatch, { history }) {
     dispatch(logOut());
     document.location.href = "/main";
+  };
+};
+
+const signupDB = (id, password, password2) => {
+  return function (dispatch, getState, { history }) {
+    console.log(id, password);
+    axios
+      .post(
+        "http://3.38.253.146/api/user/users",
+        JSON.stringify({
+          id: id,
+          password: password,
+          passwordCheck: password2,
+        }),
+        { headers: { "Content-Type": `application/json` } }
+      )
+      .then((res) => {
+        console.log(res);
+        window.alert(res.data.msg);
+        // history.push("/main");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        // const errorMessage = error.message;
+        const errorMessage = error;
+
+        console.log(error);
+      });
   };
 };
 
@@ -123,69 +123,6 @@ const logoutAction = () => {
 //   }
 
 // }
-
-const signupDB = (id, password, password2) => {
-  return function (dispatch, getState, { history }) {
-    console.log(id, password);
-    axios({
-      method: "post",
-      url: "http://3.38.253.146/user/users",
-      data: {
-        id: id,
-        password: password,
-        passwordCheck: password2,
-      },
-    })
-      .then((res) => {
-        console.log(res);
-        // window.alert(res.data.result);
-        history.push("/main");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // console.log(id, password);
-    // console.log(id, password);
-    // instance
-    //   .post("/user/users", {
-    //     id: id,
-    //     password: password,
-    //     passwordCheck: password2,
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //     window.alert(res.data.result);
-    //     // history.push("/main");
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-
-    //     console.log(errorCode, errorMessage);
-    //   });
-    //   axios({
-    //     method: "post",
-    //     url: "http://3.38.253.146/user/users",
-    //     data: {
-    //       id: id,
-    //       password: password,
-    //       passwordCheck: password2,
-    //     },
-    //   })
-    //     .then((res) => {
-    //       console.log(res);
-    //       window.alert(res.data.result);
-    //       // history.push("/main");
-    //     })
-    //     .catch((error) => {
-    //       const errorCode = error.code;
-    //       const errorMessage = error.message;
-
-    //       console.log(errorCode, errorMessage);
-    //     });
-    // };
-  };
-};
 
 // Reducer
 export default handleActions(
