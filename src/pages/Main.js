@@ -11,6 +11,9 @@ const Main = (props) => {
   const dispatch = useDispatch();
   const post_list = useSelector((state) => state.post.list);
   console.log(post_list)
+  // const image = useSelector((state) => state.post.list[0].image);
+  // console.log(image)
+
   const user_info = useSelector((state) => state.user.user);
 
   // const {history} = props;
@@ -65,7 +68,18 @@ const Main = (props) => {
           history.push("/write");
         }}
       ></Button> */}
-      {post_list.map((post, idx) => { return <Post ket={post.id} {...post} />; })}
+      <Header/>
+      {/* {image} */}
+      {post_list.map((post, idx) => {  
+        return <Post key={post.id} {...post} />; })}
+        <Button
+        is_float
+        text="+"
+        _onClick={() => {
+          history.push("/write");
+        }}
+      ></Button>
+        {/* <Post/> */}
     </>
   );
 };

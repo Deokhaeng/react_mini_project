@@ -27,28 +27,32 @@ const loginAction = (id, password) => {
   return function (dispatch) {
     axios({
       method: "post",
-      // url: "http://3.38.253.146/user/auth", // 
+      url: "http://3.38.253.146/user/auth", //
       // url: "https://reqres.in/api/login",  //테스트 api id : eve.holt@reqres.in / pw : cityslicka 
-      url:'',
-      data: {
-        email: id,
-        password: password,
+      // url:'https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users',
+      headers: {
+        "Content-Type": `application/json`,
       },
+      data: JSON.stringify({
+        id: id,
+        password: password,
+      }),
     })
-      .then((res) => {
-        console.log(res);
+      .then((doc) => {
+        console.log(doc);
+        // const token = doc.data.token
         // axios.defaults.headers.common['Authorization'] = `${token}`;
-        const accessToken = res.data.token;
-        //쿠키에 토큰 저장
+        const accessToken = doc.data.token;
+        // 쿠키에 토큰 저장
         setCookie("is_login", `${accessToken}`);
-        
-        // document.location.href = "/main";
-        history.push('/')
 
-        
+        dispatch(setUser(id, password))
+				// localStorage.setItem('is_login', doc.data.token);
+        // document.location.href = "/main";
+        history.push('/main')
       })
       .catch((error) => {
-        console.log(error);
+        console.log('로그인 실패', error);
       });
   };
 };
@@ -57,21 +61,23 @@ const signupAction = (id, password, passwordCheck) => {
   return function (dispatch) {
     axios({
       method:'post',
-      url: "https://reqres.in/api/register", //테스트 api id : eve.holt@reqres.in / pw : pistol
-      data: {
-        email: id,
+      url: "http://3.38.253.146/user/users", //테스트 api id : eve.holt@reqres.in / pw : pistol
+      headers: {
+        "Content-Type": `application/json`,
+      },
+      data: JSON.stringify({
+        id: id,
         password: password,
-      },  
-      // data: {
-      //   id: id,
-      //   password: password,
-      //   passwordCheck: passwordCheck,
-      // }, 
+        passwordCheck: passwordCheck,
+      })
     })
-    .then(res =>{
-      dispatch(setUser(id, password)) //
-      console.log(res)
-      // document.location.href = "/main"
+    .then(doc =>{
+      dispatch(setUser(id, password, passwordCheck)) //
+      console.log(doc)
+      document.location.href = "/main"
+    })
+    .catch(error =>{
+      console.log('에러가 났어여,,,', error)
     })
   };
 }

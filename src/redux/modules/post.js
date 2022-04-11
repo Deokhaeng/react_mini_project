@@ -6,7 +6,7 @@ import moment from "moment";
 import { history } from "../configureStore";
 
 import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
-import { MdDocumentScanner } from "react-icons/md";
+
 //Action
 const SET_POST = "SET_POST";
 const GET_POST = "GET_POST";
@@ -36,24 +36,28 @@ const initialState = {
 
 const initialPost = {
   //게시글 하나당 기본적으로 들어갈 내용
-  title: "",
-  content: "",
+  title: "ㅁㄴㅇㄹ",
+  content: "점심머먹지",
   image: "https://ifh.cc/g/AOA4Wq.jpg",
-  createAt: moment().format("YYYY-MM-DD"), //알아서 이러한 형식으로 보여줌
+  createdAt: moment().format("YYYY-MM-DD"), //알아서 이러한 형식으로 보여줌
 };
 
 //Middleware
 const getPostDB = () => {
-  return function (dispatch) {
+  return function (dispatch, getState, {history}) {
     let post_list = [];
     axios({
       method: "get",
-      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
+      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
+      url: "http://3.38.253.146/write_modify/user/main",
     })
       .then((doc) => {
-        console.log(doc)
-        const _post = doc.data;
+        // console.log(doc)
+        const _post = doc.data.board;
+        // const _image = doc.data.board[0].image;
+        
         console.log(_post)
+        // console.log(_image)
 
         // dispatch(loading(true));
         dispatch(setPost(_post));
@@ -66,22 +70,24 @@ const getPostDB = () => {
   };
 };
 
-const addPostDB = (title, content, image) => {
+const addPostDB = (title, content, createAt) => {
   return function (dispatch) {
     let _post = {
       ...initialPost,
       title: title,
       content: content,
+      createdAt: createAt,
     };
     axios({
       method: "post",
-      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
+      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
+      url: "http://3.38.253.146/write_modify/user/postadd",
       data: _post,
     })
       .then((doc) => {
         let post = { ..._post, id: doc.data.length + 1};
         console.log(doc);
-        dispatch(addPost(post));
+        dispatch(addPost(_post));
         dispatch(imageActions.setPreview(null));
 
         history.push('/main')
@@ -111,7 +117,7 @@ const editPostDB = (title, contents) => {
   return function (dispatch) {
     axios({
       method: "patch",
-      url: "https://reqres.in/api/users/2",
+      url: "http://3.38.253.146/write_modify/user/postedit",
       data: {
         name: title,
         job: contents,

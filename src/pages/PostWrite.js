@@ -20,9 +20,10 @@ const PostWrite = (props) => {
   const post_id = props.match.params.id;
 
   const is_edit = post_id ? true : false;
-  // console.log(is_edit)
+  console.log(is_edit)
 
   let _post = is_edit ? post_list.find((p) => p.id === post_id) : null;
+  console.log(_post)
 
   const [title, setTitle] = React.useState(_post ? _post.title : "");
   const [contents, setContents] = React.useState(_post ? _post.contents : "");
@@ -38,7 +39,7 @@ const PostWrite = (props) => {
 
     if (is_edit) { 
       //setPreview 링크 가져오자
-      dispatch(imageActions.setPreview());
+      dispatch(imageActions.setPreview(_post));
     }else{  
       dispatch(imageActions.setPreview(null));
     }
@@ -99,7 +100,7 @@ const PostWrite = (props) => {
 
         <Image
           shape="rectangle"
-          src={preview ? preview : "https://ifh.cc/g/GQnhw4.jpg"}
+          src={preview ? preview : "https://ifh.cc/g/g0oyvr.png"}
         >
           
         </Image>

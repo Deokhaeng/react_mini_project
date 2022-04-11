@@ -8,6 +8,7 @@ const Signup = (props) => {
 
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [passwordCheck, setPasswordCheck] = React.useState('')
   // const [user_name, setUserName] = React.useState('');
   // const [pwd_check, setPwdCheck] = React.useState('');
 
@@ -51,17 +52,18 @@ const Signup = (props) => {
           />
         </Grid>
 
-        {/* <Grid padding="16px 0px">
+        <Grid padding="16px 0px">
           <Input
             label="비밀번호 확인"
             placeholder="비밀번호를 다시 입력해주세요."
-            _onChange={() => {
+            _onChange={(e) => {
               console.log("!!");
+              setPasswordCheck(e.target.value)
             }}
           />
-        </Grid> */}
+        </Grid>
  
-        <Button text="회원가입하기" _onClick={()=>{dispatch(userActions.signupAction(id, password))}}></Button>
+        <Button text="회원가입하기" _onClick={()=>{dispatch(userActions.signupAction(id, password, passwordCheck))}}></Button>
       </Grid>
     </React.Fragment>
   );

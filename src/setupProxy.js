@@ -6,7 +6,7 @@ module.exports = function(app) {
     createProxyMiddleware(
         ['/api', '/socket.io'],
         {
-            target: 'http://localhost:3000/user/auth',
+            target: 'http://localhost:4000',
             changeOrigin: true,
             ws: true,
             router: {

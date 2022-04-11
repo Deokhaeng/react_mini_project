@@ -9,8 +9,8 @@ import { deleteCookie } from "../shared/Cookie";
 const Header = (props) => {
   const dispatch = useDispatch();
   const [is_login, setIsLogin] = React.useState(false);
-  console.log(is_login);
-  console.log(document.cookie);
+  // console.log(is_login);
+  
 
   React.useEffect(() => {
     let cookie = document.cookie;
@@ -24,7 +24,7 @@ const Header = (props) => {
   });
 
   if (is_login) {
-    console.log(is_login)
+    // console.log(is_login)
     return (
       <React.Fragment>
         <Grid is_flex padding="0px 0px 0px 16px" bg="#212121">
@@ -38,6 +38,7 @@ const Header = (props) => {
               text="로그아웃"
               _onClick={() => {
                 dispatch(userActions.logoutAction());
+                console.log('로그아웃했어!')
 
                 // deleteCookie(is_login);
               }}

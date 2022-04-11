@@ -8,7 +8,7 @@ const Post = (props) => {
   const dispatch = useDispatch();
   
   const post_list = useSelector((state) => state.post.list)
-  console.log(post_list)
+  // console.log(post_list)
 
   const onClick = (e) => {
     e.stopPropagation();

@@ -14,13 +14,9 @@ const Login = (props) => {
   };
   // console.log(document.cookie);
 
-  // const login = () => {
-  //   dispatch(userActions.loginAction({ user_name: "deokhaeng" }));
-  // };
-
   const [id, setId] = React.useState("");
   const [password, setPassword] = React.useState("");
-  console.log(document.cookie);
+  // console.log(document.cookie);
 
   return (
     <>
