@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 const Text = (props) => {
-  const { bold, color, size, children } = props;
-  const styles = { bold, color, size };
+  const { bold, color, size, children, textIndent } = props;
+  const styles = { bold, color, size, textIndent };
   return (
     <React.Fragment>
       <Textbox {...styles}>{children}</Textbox>
@@ -15,12 +15,14 @@ Text.defaultProps = {
   bold: false,
   color: "#222831",
   size: "16px",
+  textIndent: false,
 };
 //텍스트박스:color, font-size, bold value 지정 가능
 const Textbox = styled.p`
   color: ${(props) => props.color};
   font-size: ${(props) => props.size};
   font-weight: ${(props) => props.bold};
+  text-indent: ${(props) => props.textIndent};
 `;
 
 export default Text;

@@ -8,16 +8,20 @@ import { setCookie, deleteCookie } from "../../shared/Cookie";
 const LOG_OUT = "LOG_OUT";
 const GET_USER = "GET_USER";
 const SET_USER = "SET_USER";
+const CHECK_DUP = "CHECK_DUP";
 
 // Action Creators(액션 생성 함수)
 const logIn = createAction(SET_USER, (user) => ({ user }));
 const logOut = createAction(LOG_OUT, (user) => ({ user }));
 const getUser = createAction(GET_USER, (user) => ({ user }));
+const checkDup = createAction(CHECK_DUP, (id) => ({ id }));
 
 // InitialState(defaultprops와 같은 역할)
 const initialState = {
   user: null, // 처음에 로그인 안 했을 거니까 유저가 없음.
   is_login: false, // 처음에는 로그인이 안되어 있을 테니까 false.
+  is_check: false,
+  id: null,
 };
 
 // Middleware Actions(미들웨어 액션)
@@ -74,6 +78,21 @@ const signupDB = (id, password, password2) => {
         const errorMessage = error;
 
         console.log(error);
+      });
+  };
+};
+
+const idCheck = (id) => {
+  return function (dispatch) {
+    axios
+      .post("/api/sign/nickname", { nickname: id })
+      .then((res) => {
+        dispatch(checkDup(true));
+        window.alert("사용 가능한 아이디입니다.");
+      })
+      .catch((error) => {
+        dispatch(checkDup(false));
+        window.alert("이미 존재하는 아이디입니다.");
       });
   };
 };
@@ -135,13 +154,20 @@ export default handleActions(
         // creatAction을 사용할 때 액션 안에 type이 있고,
         // paylead가 있고, 이 안에 보낸 데이터가 담긴다.
       }),
+
     [LOG_OUT]: (state, action) =>
       produce(state, (draft) => {
         deleteCookie("is_login");
         draft.user = null;
         draft.is_login = false;
       }),
+
     [GET_USER]: (state, action) => produce(state, (draft) => {}),
+
+    [CHECK_DUP]: (state, action) =>
+      produce(state, (draft) => {
+        draft.is_check = action.payload.id;
+      }),
   },
   initialState
 );
@@ -154,6 +180,7 @@ const actionCreators = {
   loginAction,
   logoutAction,
   signupDB,
+  idCheck,
 };
 
 export { actionCreators };
