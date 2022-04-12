@@ -30,33 +30,41 @@ const Upload = (props) => {
       //   };
       dispatch(imageActions.setPreview(reader.result));
     };
-
   };
 
-  // const fileUploadHandler = (title, content) => {
-  //   if (!fileInput.current || fileInput.current.files.length === 0) {
-  //         window.alert("파일을 선택해주세요!");
-  //         return;
-  //   }
-  //   const file = fileInput.current.files[0];
+  const fileUploadHandler = (title, content) => {
+    if (!fileInput.current || fileInput.current.files.length === 0) {
+          window.alert("파일을 선택해주세요!");
+          return;
+    }
+    const file = fileInput.current.files[0];
 
-  //   const formData = new FormData();
+    const formData = new FormData();
 
-  //   formData.append('image', file);
-  //   formData.append('title', title);
-  //   formData.append('content', content);
-  //   console.log('formData', formData);
+    formData.append('image', file);
+    formData.append('title', title);
+    formData.append('content', content);
+    console.log('formData', formData);
 
-  //   return(
-  //     axios({
-  //     method: "post",
-  //     url: 'http://3.38.253.146/write_modify/user/postadd',
-  //     data: formData,
-  //     headers: { "Content-Type": "multipart/form-data", Authorization: localStorage.getItem("access_token") }
-  //   })
-  //   )
-  // };
-  // console.log(fileUploadHandler)
+    return(
+      axios({
+      method: "post",
+      url: 'http://3.38.253.146/write_modify/user/postadd',
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data", Authorization: localStorage.getItem("access_token") } //Bearer
+    })
+    )
+  };
+  console.log(fileUploadHandler)
+
+  const uploadFB = () => {
+        if (!fileInput.current || fileInput.current.files.length === 0) {
+          window.alert("파일을 선택해주세요!");
+          return;
+        }
+    
+        dispatch(imageActions.uploadImageFB(fileInput.current.files[0]));
+    };
 
   return (
     <React.Fragment>
@@ -66,7 +74,7 @@ const Upload = (props) => {
         ref={fileInput}
         disabled={uploading}
       />
-      {/* <button type="button" onClick={fileUploadHandler}/> */}
+      <button type="button" onClick={fileUploadHandler}/>
       {/* <FileUploader handleChange={fileUploadHandler} name="file" types={fileTypes} /> */}
     </React.Fragment>
   );

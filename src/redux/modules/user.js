@@ -1,7 +1,6 @@
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
-import instance from '../../shared/Request';
 import {history} from '../../redux/configureStore'
 
 import {setCookie, deleteCookie } from "../../shared/Cookie";

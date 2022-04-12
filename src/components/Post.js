@@ -12,13 +12,13 @@ const Post = (props) => {
 
   const onClick = (e) => {
     e.stopPropagation();
-    history.push(`/modify/${props._id}`);
+    history.push(`/modify/${props.post_id}`);
   };
 
   const Delete = (e) => {
     e.stopPropagation();
     dispatch(deleteActions.deletePostDB(props.post_id));
-    console.log(props.id)
+    // console.log(props.post_id)
   };
 
   return (
@@ -26,8 +26,8 @@ const Post = (props) => {
       <Grid padding="20px">
         <Grid is_flex width="auto">
           <Image shape="circle" src={props.src} />
-          <Text bold>{props.post_id}</Text>
-          <Text>{props.createAt}</Text>
+          <Text bold>{props.id}</Text>  
+          <Text>{props.createdAt}</Text>
         </Grid>
         <Grid is_flex width="auto" margin="0% 0% 0% 48%">
           {/* {props.is_me && ( */}
