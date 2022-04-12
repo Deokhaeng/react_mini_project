@@ -11,7 +11,7 @@ const SET_USER = "SET_USER";
 const CHECK_DUP = "CHECK_DUP";
 
 // Action Creators(액션 생성 함수)
-const logIn = createAction(SET_USER, (user) => ({ user }));
+const setUser = createAction(SET_USER, (token) => ({ token }));
 const logOut = createAction(LOG_OUT, (user) => ({ user }));
 const getUser = createAction(GET_USER, (user) => ({ user }));
 const checkDup = createAction(CHECK_DUP, (id) => ({ id }));
@@ -22,6 +22,7 @@ const initialState = {
   is_login: false, // 처음에는 로그인이 안되어 있을 테니까 false.
   is_check: false,
   id: null,
+  token: null,
 };
 
 // Middleware Actions(미들웨어 액션)
@@ -35,9 +36,16 @@ const loginAction = (userInfo) => {
       )
       .then((res) => {
         console.log(res);
+
         const accessToken = res.data.token;
         //쿠키에 토큰 저장
         setCookie("is_login", `${accessToken}`);
+        dispatch(setUser(res.data.token));
+        // dispatch(
+        //   setUser({
+        //     id:id
+        //   })
+        // )
         history.push("/main");
       })
       .catch((error) => {
@@ -56,10 +64,10 @@ const logoutAction = () => {
 
 const signupDB = (id, password, password2) => {
   return function (dispatch, getState, { history }) {
-    console.log(id, password);
+    console.log(id, password, password2);
     axios
       .post(
-        "http://3.38.253.146/api/user/users",
+        "http://3.38.253.146/api/user/users/",
         JSON.stringify({
           id: id,
           password: password,
@@ -85,71 +93,35 @@ const signupDB = (id, password, password2) => {
 const idCheck = (id) => {
   return function (dispatch) {
     axios
-      .post("/api/sign/nickname", { nickname: id })
+      .post(
+        "http://3.38.253.146/api/user/users/idCheck/",
+        JSON.stringify({
+          id: id,
+          // password: 1234,
+          // passwordCheck: 1234,
+        }),
+        { headers: { "Content-Type": `application/json` } }
+      )
       .then((res) => {
+        console.log(res);
         dispatch(checkDup(true));
         window.alert("사용 가능한 아이디입니다.");
       })
       .catch((error) => {
+        console.log(error);
         dispatch(checkDup(false));
         window.alert("이미 존재하는 아이디입니다.");
       });
   };
 };
 
-// const loginCheckDB = () => {
-//   return function (dispatch, getState, { history }) {
-//     const token = getCookie("is_login");
-//     axios({
-//       method: "post",
-//       url: "http://3.38.253.146/user/auth",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     })
-//       .then((res) => {
-//         dispatch(
-//           setUser({
-//             email: res.data.email,
-//             nickname: res.data.nickname,
-//           })
-//         );
-//       })
-//       .catch((error) => {
-//         console.log(error.code, error.message);
-//       });
-//   };
-// };
-
-// const IdCheck = (){
-
-//   console.log('Join.vue => IdCheck');
-//   console.log('Join.vue => IdCheck', this.member.userid);
-
-//   const url = `/member/idcheck?uid=${this.member.userid}`;
-//   const headers = {"Content-Type":"application/json"};
-//   const response = await this.axios.get(url, {headers:headers});
-//   console.log(response);
-
-//   if(response.data.result === 1){
-//       alert('중복된 아이디가 존재합니다.')
-//       this.$refs.id.focus();
-//       return false;
-//   }
-//   if(response.data.result === 0){
-//       alert('사용가능한 아이디입니다')
-//       this.$refs.pw.focus();
-//   }
-
-// }
-
 // Reducer
 export default handleActions(
   {
     [SET_USER]: (state, action) =>
       produce(state, (draft) => {
-        setCookie("is_login", "success");
-        draft.user = action.payload.user;
+        draft.token = action.payload.token;
+        console.log(draft.token);
         draft.is_login = true;
         // creatAction을 사용할 때 액션 안에 type이 있고,
         // paylead가 있고, 이 안에 보낸 데이터가 담긴다.
@@ -174,7 +146,7 @@ export default handleActions(
 
 // Action Creator Export (액션 생성 함수 만든거 export)
 const actionCreators = {
-  logIn,
+  setUser,
   logOut,
   getUser,
   loginAction,

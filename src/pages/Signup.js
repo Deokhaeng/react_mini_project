@@ -7,6 +7,7 @@ import { Grid, Text, Input, Button } from "../elements";
 //REDUX-ACTION & REACT-HOOK
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user";
+import { history } from "../redux/configureStore";
 
 //VALIDATION
 import { idVal, pwdVal } from "../common/validation";
@@ -30,8 +31,6 @@ const Signup = (props) => {
   const [pwdWarning, setPwdWarColor] = React.useState("red");
   const [pwdCheckWarning, setPwdCheckWarColor] = React.useState("red");
 
-  // const [user_name, setUserName] = React.useState("");
-
   const checkID = (val) => {
     if (val === "") {
       setIdWarColor("red");
@@ -44,7 +43,7 @@ const Signup = (props) => {
       return;
     }
 
-    setIdWarColor("green");
+    setIdWarColor("red");
     setIdConfirm("중복 검사를 해주세요");
   };
 
@@ -69,39 +68,29 @@ const Signup = (props) => {
       setPwdCheckConfirm("패스워드 확인란이 입력되지 않았습니다.");
       return;
     }
-    if (val.length < 6) {
+    if (val.length < 4) {
       setPwdCheckWarColor("red");
       setPwdCheckConfirm("");
       return;
     }
-    if (val !== password) {
-      setPwdCheckWarColor("red");
-      setPwdCheckConfirm("입력된 패스워드가 서로 다릅니다.");
+    if (val === password) {
+      setPwdCheckWarColor("green");
+      setPwdCheckConfirm("패스워드가 올바르게 입력되었습니다.");
       return;
     }
-    setPwdCheckWarColor("green");
-    setPwdCheckConfirm("패스워드가 올바르게 입력되었습니다.");
+
+    setPwdCheckWarColor("red");
+    setPwdCheckConfirm("입력된 패스워드가 서로 다릅니다.");
+  };
+
+  const checkDup = () => {
+    dispatch(userActions.idCheck(id));
+    setIdConfirm("");
   };
 
   const signup = () => {
-    // if (id === "" || password === "") {
-    //   window.alert("아이디, 패스워드, 모두 입력해주세요!");
-    //   return;
-    // }
-
-    // if (password !== password2) {
-    //   window.alert("패스워드와 패스워드 확인이 일치하지 않습니다!");
-    //   return;
-    // }
-    if (
-      !(
-        dupState &&
-        idWarning === "green" &&
-        pwdWarning === "green" &&
-        pwdCheckWarning === "green"
-      )
-    )
-      return;
+    if (!(dupState && pwdWarning === "green" && pwdCheckWarning === "green"))
+      return window.alert("입력한 내용을 다시 확인해주세요!");
 
     dispatch(userActions.signupDB(id, password, password2));
   };
@@ -120,29 +109,16 @@ const Signup = (props) => {
             _onChange={(e) => {
               setId(e.target.value);
             }}
+            keyUp={(event) => {
+              debounce(event.target.value, checkID);
+            }}
           />
-          <Text
-            font-Size="12px"
-            color={idWarning}
-            lineHeight="2"
-            textIndent="15px"
-          >
+          <Text size="12px" color={idWarning} lineHeight="2" textIndent="10px">
             {idConfirm}
           </Text>
 
-          <Button>중복확인</Button>
+          <Button _onClick={checkDup}>중복 확인</Button>
         </Grid>
-
-        {/* <Grid padding="16px 0px">
-          <Input
-            label="닉네임"
-            placeholder="닉네임을 입력해주세요."
-            _onChange={() => {
-              setUserName(e.target.value);
-            }}
-          />
-        </Grid> */}
-
         <Grid padding="16px 0px">
           <Input
             label="패스워드"
@@ -181,6 +157,12 @@ const Signup = (props) => {
         </Grid>
 
         <Button text="회원가입하기" _onClick={signup}></Button>
+        <Button
+          text="취소"
+          _onClick={() => {
+            history.push("/login");
+          }}
+        ></Button>
       </Grid>
     </React.Fragment>
   );

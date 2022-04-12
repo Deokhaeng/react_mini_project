@@ -1,10 +1,12 @@
 import React from "react";
-import { Text, Input, Grid, Button } from "../elements";
-import { getCookie, setCookie, deleteCookie } from "../shared/Cookie";
-import { history } from "../redux/configureStore";
 
+//Elements
+import { Text, Input, Grid, Button } from "../elements";
+
+//REDUX-ACTION & REACT-HOOK
 import { useDispatch } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user"; // as는 별명 붙이기
+import { history } from "../redux/configureStore";
 
 const Login = (props) => {
   const dispatch = useDispatch();
