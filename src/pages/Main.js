@@ -71,7 +71,7 @@ const Main = (props) => {
       <Header />
       {/* {image} */}
       {post_list.map((post, idx) => {
-        return <Post key={post.id} {...post} />;
+        return <Post key={post._id} {...post} />;
       })}
       <Button
         is_float
