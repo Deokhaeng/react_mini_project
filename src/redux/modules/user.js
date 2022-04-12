@@ -41,11 +41,6 @@ const loginAction = (userInfo) => {
         //쿠키에 토큰 저장
         setCookie("is_login", `${accessToken}`);
         dispatch(setUser(res.data.token));
-        // dispatch(
-        //   setUser({
-        //     id:id
-        //   })
-        // )
         history.push("/main");
       })
       .catch((error) => {

@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 const Text = (props) => {
-  const { bold, color, size, children, textIndent } = props;
-  const styles = { bold, color, size, textIndent };
+  const { bold, color, size, children, textIndent, _onClick } = props;
+  const styles = { bold, color, size, textIndent, _onClick };
   return (
     <React.Fragment>
       <Textbox {...styles}>{children}</Textbox>
@@ -16,6 +16,7 @@ Text.defaultProps = {
   color: "#222831",
   size: "16px",
   textIndent: false,
+  _onClick: () => {},
 };
 //텍스트박스:color, font-size, bold value 지정 가능
 const Textbox = styled.p`

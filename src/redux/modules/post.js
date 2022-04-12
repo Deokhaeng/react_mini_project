@@ -5,9 +5,11 @@ import { actionCreators as imageActions } from "./image";
 import moment from "moment";
 import { history } from "../configureStore";
 
+import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
+
 //Action
 const SET_POST = "SET_POST";
-const GET_POST = "GET_POST";
+// const GET_POST = "GET_POST";
 const ADD_POST = "ADD_POST";
 const EDIT_POST = "EDIT_POST";
 const DELETE_POST = "DELETE_POST";
@@ -17,9 +19,9 @@ const DELETE_POST = "DELETE_POST";
 const setPost = createAction(SET_POST, (_post) => ({ _post }));
 // const getPost = createAction(GET_POST, (post) => ({ post }));
 const addPost = createAction(ADD_POST, (post) => ({ post }));
-const editPost = createAction(EDIT_POST, (post_id, post) => ({
+const editPost = createAction(EDIT_POST, (post_id, formData) => ({
   post_id,
-  post,
+  formData,
 }));
 const deletePost = createAction(DELETE_POST, (post_id) => ({ post_id }));
 // const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
@@ -43,24 +45,18 @@ const initialPost = {
 //Middleware
 const getPostDB = () => {
   return function (dispatch, getState, { history }) {
-    let post_list = [];
+    //form타입
     axios({
       method: "get",
       // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
       url: "http://3.38.253.146/write_modify/user/main",
     })
       .then((doc) => {
-        // console.log(doc)
         const _post = doc.data.board;
-        // const _image = doc.data.board[0].image;
 
         console.log(_post);
-        // console.log(_image)
 
-        // dispatch(loading(true));
         dispatch(setPost(_post));
-        // console.log(res);
-        // console.log(post_list)
       })
       .catch((error) => {
         console.log("에러났다!", error);
@@ -68,25 +64,30 @@ const getPostDB = () => {
   };
 };
 
-const addPostDB = (title, content, createAt) => {
-  return function (dispatch) {
+const addPostDB = (formData) => {
+  return function (dispatch, getState, { history }) {
     let _post = {
       ...initialPost,
-      title: title,
-      content: content,
-      createdAt: createAt,
+      formData,
+      createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
     };
+    console.log(_post);
+
     axios({
       method: "post",
       // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
       url: "http://3.38.253.146/write_modify/user/postadd",
-      data: _post,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${getCookie("is_login")}`,
+      },
     })
       .then((doc) => {
-        let post = { ..._post, id: doc.data.length + 1 };
+        // let post = { ..._post, id: doc.data.length + 1};
         console.log(doc);
         dispatch(addPost(_post));
-        dispatch(imageActions.setPreview(null));
+        // dispatch(imageActions.setPreview(null));
 
         history.push("/main");
       })
@@ -96,54 +97,80 @@ const addPostDB = (title, content, createAt) => {
   };
 };
 
-const getOnePostDB = (id) => {
+const getOnePostDB = (_id) => {
   return function (dispatch, getState, { history }) {
     axios({
       method: "get",
-      url: "",
+      url: `http://3.38.253.146/write_modify/user/detail/${_id}`,
     }).then((doc) => {
       console.log(doc);
       if (!doc.data) {
         return;
       }
-      dispatch(setPost(id));
+      const post = doc.data;
+      dispatch(setPost(post));
     });
   };
 };
 
-const editPostDB = (title, contents) => {
-  return function (dispatch) {
+const editPostDB = (formData, post_id) => {
+  return function (dispatch, getState) {
+    // console.log(image)
+    // if (!post_id) {
+    //   console.log("게시물 정보가 없어요!");
+    //   return;
+    // const _image = getState().image.preview;
+    // .findIndex((p) => p.id === post_id);
+    console.log(post_id);
+    const _post_idx = getState().post.list.findIndex(
+      (p) => p.post_id == post_id
+    );
+    console.log(_post_idx);
+    const _post = getState().post.list[_post_idx];
+    console.log(_post_idx);
+
+    console.log(_post);
+
+    let post = {
+      ..._post,
+      formData, //patch 안됌
+    };
+    // `multipart/form-data; boundary=${formData._boundary}`
+    console.log(post);
     axios({
-      method: "patch",
-      url: "http://3.38.253.146/write_modify/user/postedit",
-      data: {
-        name: title,
-        job: contents,
+      method: "post",
+      url: `http://3.38.253.146/write_modify/user/postmodify/${post_id}`,
+      data: formData,
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+        Authorization: `Bearer ${getCookie("is_login")}`,
       },
     })
       .then((res) => {
         console.log(res);
-        // const post = {...initialPost, title: title, contents: contents}
-        dispatch(editPost(title, contents));
+
+        dispatch(editPost(post, post_id));
 
         // history.push('/main')
       })
       .catch((error) => {
-        console.log(error);
+        console.log("에러났어", error);
       });
   };
 };
 
-const deletePostDB = (post) => {
+const deletePostDB = (post_id) => {
   return function (dispatch) {
     axios({
       method: "delete",
-      url: "https://reqres.in/api/users/2",
-      data: {},
+      url: `http://3.38.253.146/write_modify/user/delete/${post_id}`,
+      data: { post_id },
+      headers: { Authorization: `Bearer ${getCookie("is_login")}` },
     })
       .then((res) => {
         console.log(res);
-        dispatch(deletePost());
+
+        dispatch(deletePost(post_id));
 
         // document.location.href = "/main";
       })
@@ -174,11 +201,11 @@ export default handleActions(
 
         // draft.is_loading = false;
       }),
-    [GET_POST]: (state, action) =>
-      produce(state, (draft) => {
-        // console.log(action.payload.post);
-        draft.post = action.payload.post;
-      }),
+    // [GET_POST]: (state, action) =>
+    //   produce(state, (draft) => {
+    //     // console.log(action.payload.post);
+    //     draft.post = action.payload.post;
+    //   }),
     [ADD_POST]: (state, action) =>
       produce(state, (draft) => {
         //

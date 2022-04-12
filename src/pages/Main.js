@@ -70,8 +70,19 @@ const Main = (props) => {
       ></Button> */}
       <Header />
       {/* {image} */}
-      {post_list.map((post, idx) => {
-        return <Post key={post._id} {...post} />;
+      {post_list.map((p, idx) => {
+        return (
+          //   <Grid
+          //   key={p.id}
+          //   bg="#ffffff"
+          //   margin="8px 0px"
+          //   _onClick={() => {
+          //     history.push(`/detail/${p.post_id}`);
+          //   }}
+          // >
+          <Post key={p._id} {...p} />
+          // </Grid>
+        );
       })}
       <Button
         is_float

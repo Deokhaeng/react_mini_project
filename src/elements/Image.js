@@ -2,18 +2,37 @@ import React from "react";
 import styled from "styled-components";
 
 const Image = (props) => {
-  const { src, size } = props;
+  const { src, size, width, height, is_contents } = props;
   const styles = {
     src: src,
     size: size,
+    width,
+    height,
+    is_contents,
   };
+  // if (is_contents) {
+  //   return (
+  //     <React.Fragment>
+  //       <AspectOutter {...styles}>
+  //         <AspectInner></AspectInner>
+  //       </AspectOutter>
+  //     </React.Fragment>
+  //   );
+  // }
+
   return (
     <React.Fragment>
-      <AspectOutter>
-        <AspectInner {...styles}></AspectInner>
+      <AspectOutter {...styles}>
+        <AspectInner></AspectInner>
       </AspectOutter>
     </React.Fragment>
   );
+
+  // return (
+  //   <React.Fragment>
+  //     <AspectOutter {...styles} />
+  //   </React.Fragment>
+  // );
 };
 
 Image.defaultProps = {
@@ -24,6 +43,8 @@ Image.defaultProps = {
 const AspectOutter = styled.div`
   background-image: url("${(props) => props.src}");
   background-size: cover;
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
 `;
 
 const AspectInner = styled.div`
