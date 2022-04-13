@@ -8,7 +8,7 @@ import Main from "../pages/Main";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import PostWrite from "../pages/PostWrite";
-// import PostDetail from '../pages/PostDetail';
+import PostDetail from '../pages/PostDetail';
 
 import Grid from "../elements/Grid";
 
@@ -26,7 +26,7 @@ function App() {
           <Route path="/signup" exact component={Signup} />
           <Route path="/write" exact component={PostWrite} />
           <Route path="/modify/:post_id" exact component={PostWrite}/>
-          {/* <Route path='/detail/:post_id' exact component={PostDetail}/> */}
+          <Route path='/detail/:post_id' exact component={PostDetail}/>
         </ConnectedRouter>
       </Grid>
     </>

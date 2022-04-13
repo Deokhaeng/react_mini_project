@@ -71,7 +71,7 @@ const PostWrite = (props) => {
     formData.append("image", file);
     formData.append("title", title);
     formData.append("content", content);
-    console.log("formData", formData);
+    // console.log("formData", formData);
 
     return(
       dispatch(postActions.addPostDB(formData)),
@@ -141,6 +141,7 @@ const PostWrite = (props) => {
             ref={fileInput}
             disabled={uploading}
           />
+          <Upload/>
         </Grid>
 
         <Grid>
@@ -159,6 +160,7 @@ const PostWrite = (props) => {
           <Input
             value={title}
             label="게시글 제목"
+            multiLine
             placeholder="제목을 작성해 주세요."
             _onChange={(e) => {
               console.log("!!");
