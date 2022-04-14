@@ -14,7 +14,7 @@
 떡볶이 맛집을 소개하고 리뷰하는 커뮤니티
 
 
-## 🛠Package
+## 🛠 Package
 -State Management: redux, react-redux
 
 -Style Work: styled-components
@@ -28,7 +28,7 @@
 -Soket: socket.io, socket.io-client
 
 
-## 💪역할 분담
+## 💪 역할 분담
 이덕행 : 로그인, 회원가입, 메인 페이지, 입장 페이지
 
 최정원 : 게시글 작성, 수정, 삭제
@@ -38,7 +38,7 @@
 공동작업 : 실시간채팅, CSS
 
 
-## 🔎에러 정리
+## 🔎 에러 정리
 이덕행
 1. 로그인 시 아이디 비번을 입력할 때 어떤 값을 넣어도 서버에서 토큰을 보내주는 문제 발생
 
