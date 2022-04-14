@@ -1,89 +1,31 @@
 import React from "react";
 import styled from "styled-components";
 
-import { Text, Grid } from "./index";
-
-const Input = (props) => {
-  const {
-    label,
-    placeholder,
-    _onChange,
-    type,
-    multiLine,
-    value,
-    keyUp,
-    keyPress,
-    chatName,
-  } = props;
-  //플레이스홀더, 라벨속성 지정가능, onChange:_onChange로 지정
-  if (multiLine) {
-    return (
-      <Grid>
-        {label && <Text margin="0px">{label}</Text>}
-        <ElTextarea
-          rows={10}
-          value={value}
-          placeholder={placeholder}
-          onChange={_onChange}
-        ></ElTextarea>
-      </Grid>
-    );
-  }
-
-  if (chatName) {
-    return (
-      <Grid>
-        <ElChatName placeholder={placeholder} onChange={_onChange} />
-      </Grid>
-    );
-  }
-
+const Text = (props) => {
+  const { bold, color, size, children, textIndent, _onClick } = props;
+  const styles = { bold, color, size, textIndent, _onClick };
   return (
     <React.Fragment>
-      <Grid>
-        {label && <Text margin="0px">{label}</Text>}
-        <ElInput
-          type={type}
-          placeholder={placeholder}
-          onChange={_onChange}
-          onKeyUp={keyUp}
-          onKeyPress={keyPress}
-        />
-      </Grid>
+      <Textbox {...styles}>{children}</Textbox>
     </React.Fragment>
   );
 };
 
-Input.defaultProps = {
-  multiLine: false,
-  label: false,
-  placeholder: "텍스트를 입력해주세요.",
-  type: "text",
-  value: "",
-  _onChange: () => {},
-  keyUp: () => {},
-  keyPress: () => {},
+Text.defaultProps = {
+  bold: false,
+  color: "#222831",
+  size: "16px",
+  textIndent: false,
+  _onClick: () => {},
 };
-
-const ElTextarea = styled.textarea`
-  border: 1px solid #212121;
-  width: 100%;
-  padding: 12px 4px;
-  box-sizing: border-box;
+//텍스트박스:color, font-size, bold value 지정 가능
+const Textbox = styled.p`
+  color: ${(props) => props.color};
+  font-size: ${(props) => props.size};
+  font-weight: ${(props) => props.bold};
+  text-indent: ${(props) => props.textIndent};
 `;
 
-const ElInput = styled.input`
-  border: 1px solid #212121;
-  width: 100%;
-  padding: 12px 4px;
-  box-sizing: border-box;
-`;
+export default Text;
 
-const ElChatName = styled.input`
-  border: 1px solid #212121;
-  width: 100px;
-  padding: 12px 4px;
-  box-sizing: border-box;
-`;
 
-export default Input;
