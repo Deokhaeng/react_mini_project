@@ -173,9 +173,9 @@ const PostWrite = (props) => {
 
         <Grid padding="16px">
           {is_edit ? (
-            <Button text="게시글 수정" _onClick={editPost}></Button>
+            <Button text="게시글 수정" _onClick={editPost} ></Button>
           ) : (
-            <Button text="게시글 작성" _onClick={addPost}></Button>
+            <Button text="게시글 작성" _onClick={addPost} ></Button>
           )}
         </Grid>
         </Two>
@@ -211,6 +211,5 @@ const Two = styled.div`
   width: 500px;
   
 `
-
 
 export default PostWrite;

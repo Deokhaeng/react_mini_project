@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import '../shared/App.css';
 
 const Button = (props) => {
   const {
@@ -64,9 +65,14 @@ const ElButton = styled.button`
   color: #212121;
   padding: ${(props) => props.padding};
   box-sizing: border-box;
-  border: #525e75 solid 1px;
+  border: none;
+  border-radius: 5px;
   ${(props) => (props.margin ? `margin: ${props.margin};` : "")}
   ${(props) => (props.right ? `float: right` : "")}
+  &:hover{
+    box-shadow: 0px 0px 5px 0px gray;
+  }
+  font-family: 'Cafe24Ohsquareair';
 `;
 
 const FloatButton = styled.button`
@@ -82,8 +88,12 @@ const FloatButton = styled.button`
   right: 16px;
   text-align: center;
   vertical-align: middle;
-  border: #525e75;
+  border: none;
   border-radius: 50px;
+  &:hover{
+    box-shadow: 0px 0px 5px 0px gray;
+  }
+  font-family: 'Cafe24Ohsquareair';
 `;
 
 const DeleteButton = styled.button`
@@ -99,8 +109,12 @@ const DeleteButton = styled.button`
   right: 16px;
   text-align: center;
   vertical-align: middle;
-  border: #525e75;
+  border: none;
   border-radius: 50x;
+  &:hover{
+    box-shadow: 0px 0px 5px 0px gray;
+  }
+  font-family: 'Cafe24Ohsquareair';
 `;
 
 export default Button;
