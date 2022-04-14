@@ -4,9 +4,19 @@ import styled from "styled-components";
 import { Text, Grid } from "./index";
 
 const Input = (props) => {
-  const { label, placeholder, _onChange, type, multiLine, value } = props;
+  const {
+    label,
+    placeholder,
+    _onChange,
+    type,
+    multiLine,
+    value,
+    keyUp,
+    keyPress,
+    chatName,
+  } = props;
   //플레이스홀더, 라벨속성 지정가능, onChange:_onChange로 지정
-    if(multiLine){
+  if (multiLine) {
     return (
       <Grid>
         {label && <Text margin="0px">{label}</Text>}
@@ -19,12 +29,26 @@ const Input = (props) => {
       </Grid>
     );
   }
-  
+
+  if (chatName) {
+    return (
+      <Grid>
+        <ElChatName placeholder={placeholder} onChange={_onChange} />
+      </Grid>
+    );
+  }
+
   return (
     <React.Fragment>
       <Grid>
         {label && <Text margin="0px">{label}</Text>}
-        <ElInput type={type} placeholder={placeholder} onChange={_onChange} />
+        <ElInput
+          type={type}
+          placeholder={placeholder}
+          onChange={_onChange}
+          onKeyUp={keyUp}
+          onKeyPress={keyPress}
+        />
       </Grid>
     </React.Fragment>
   );
@@ -35,8 +59,10 @@ Input.defaultProps = {
   label: false,
   placeholder: "텍스트를 입력해주세요.",
   type: "text",
+  value: "",
   _onChange: () => {},
-  value:'',
+  keyUp: () => {},
+  keyPress: () => {},
 };
 
 const ElTextarea = styled.textarea`
@@ -46,10 +72,16 @@ const ElTextarea = styled.textarea`
   box-sizing: border-box;
 `;
 
-
 const ElInput = styled.input`
   border: 1px solid #212121;
   width: 100%;
+  padding: 12px 4px;
+  box-sizing: border-box;
+`;
+
+const ElChatName = styled.input`
+  border: 1px solid #212121;
+  width: 100px;
   padding: 12px 4px;
   box-sizing: border-box;
 `;
