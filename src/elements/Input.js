@@ -13,7 +13,6 @@ const Input = (props) => {
     value,
     keyUp,
     keyPress,
-    chatName,
   } = props;
   //플레이스홀더, 라벨속성 지정가능, onChange:_onChange로 지정
   if (multiLine) {
@@ -26,14 +25,6 @@ const Input = (props) => {
           placeholder={placeholder}
           onChange={_onChange}
         ></ElTextarea>
-      </Grid>
-    );
-  }
-
-  if (chatName) {
-    return (
-      <Grid>
-        <ElChatName placeholder={placeholder} onChange={_onChange} />
       </Grid>
     );
   }
@@ -75,13 +66,6 @@ const ElTextarea = styled.textarea`
 const ElInput = styled.input`
   border: 1px solid #212121;
   width: 100%;
-  padding: 12px 4px;
-  box-sizing: border-box;
-`;
-
-const ElChatName = styled.input`
-  border: 1px solid #212121;
-  width: 100px;
   padding: 12px 4px;
   box-sizing: border-box;
 `;

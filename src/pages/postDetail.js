@@ -15,6 +15,8 @@ const Detail = (props) => {
 
   console.log(post_list);
 
+  const board_list = [post_list.board];
+
   const post_idx = post_list.findIndex((p) => p.post_id == postNum);
 
   console.log(post_idx);
