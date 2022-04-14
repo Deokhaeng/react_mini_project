@@ -151,7 +151,7 @@ const editPostDB = (formData, post_id) => {
 
         dispatch(editPost(post, post_id));
 
-        // history.push('/main')
+        history.push("/main");
       })
       .catch((error) => {
         console.log("에러났어", error);

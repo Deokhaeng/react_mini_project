@@ -8,8 +8,19 @@ import { deleteCookie } from "../shared/Cookie";
 
 const Header = (props) => {
   const dispatch = useDispatch();
+  // const is_login = useSelector((state) => state.user.is_login);
+  const [is_login, setIsLogin] = React.useState(false);
 
-  const is_login = useSelector((state) => state.user.is_login);
+  React.useEffect(() => {
+    let cookie = document.cookie;
+    console.log(cookie);
+    if (cookie) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+    // dispatch(userActions.getUserDB());
+  }, []);
 
   if (is_login) {
     return (
