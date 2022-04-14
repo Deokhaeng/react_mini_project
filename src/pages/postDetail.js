@@ -3,6 +3,7 @@ import Post from "../components/Post";
 import { Box, Grid } from "../elements";
 import { actionCreators as postActions } from "../redux/modules/post";
 import { useDispatch, useSelector } from "react-redux";
+import { history } from "../redux/configureStore";
 //db 임포트
 const Detail = (props) => {
   const dispatch = useDispatch();
@@ -28,12 +29,15 @@ const Detail = (props) => {
   }, []);
   return (
     <React.Fragment>
-      {post && (
-        <Post
+      <Grid padding='50px' _onClick={()=>{history.push('/main')}}>
+        {post && (
+        <Post 
           {...post}
           // is_me={post.user_info.user_id === user_info?.uid}
         />
       )}
+      </Grid>
+      
     </React.Fragment>
   );
 };

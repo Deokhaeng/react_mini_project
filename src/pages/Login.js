@@ -1,7 +1,9 @@
 import React from "react";
+import styled from "styled-components";
 
 //Elements
-import { Text, Input, Grid, Button } from "../elements";
+import {Input, Grid, Button } from "../elements";
+import {Box} from '../elements'
 
 //REDUX-ACTION & REACT-HOOK
 import { useDispatch } from "react-redux";
@@ -20,68 +22,50 @@ const Login = (props) => {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          width: "100%",
-          height: "90vh",
-        }}
-      >
-        <div
-          style={{
-            margin: "auto",
-            minWidth: "50vh",
-            minHeight: "50vh",
-            backgroundColor: "#dddddd",
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              margin: "auto",
-              textAlign: "center",
+    <Box margin='100px auto' >
+      <Grid padding="20px" center>
+        <Img src="./img/랜선 떡볶이단 bk.png"/>
+        <Grid padding="16px 0px">
+          <Input
+            placeholder="아이디를 입력해주세요."
+            _onChange={(event) => {
+              setUserInfo({ ...userInfo, id: event.target.value });
             }}
-          >
-            <Grid padding="16px" center>
-              <Text size="32px" bold>
-                랜선 떡볶이단(logo)
-              </Text>
-              <Grid padding="16px 0px">
-                <Input
-                  placeholder="아이디를 입력해주세요."
-                  _onChange={(event) => {
-                    setUserInfo({ ...userInfo, id: event.target.value });
-                  }}
-                />
-              </Grid>
-              <Grid padding="16px 0px">
-                <Input
-                  type='password'
-                  placeholder="패스워드 입력해주세요."
-                  _onChange={(event) => {
-                    setUserInfo({ ...userInfo, password: event.target.value });
-                  }}
-                />
-              </Grid>
-              <Button
-                text="로그인"
-                _onClick={() => {
-                  console.log("로그인 했어!");
-                  login();
-                }}
-              ></Button>
-              <Button
-                text="회원가입"
-                margin="4px 0px"
-                _onClick={() => {
-                  history.push("/signup");
-                }}
-              ></Button>
-            </Grid>
-          </div>
-        </div>
-      </div>
+          />
+        </Grid>
+        <Grid padding="16px 0px">
+          <Input
+            type="password"
+            placeholder="패스워드 입력해주세요."
+            _onChange={(event) => {
+              setUserInfo({ ...userInfo, password: event.target.value });
+            }}
+          />
+        </Grid>
+        <Button
+          text="로그인"
+          _onClick={() => {
+            console.log("로그인 했어!");
+            login();
+          }}
+        ></Button>
+        <Button
+          text="회원가입"
+          margin="4px 0px"
+          _onClick={() => {
+            history.push("/signup");
+          }}
+        ></Button>
+      </Grid>
+    </Box>
+      
     </>
   );
 };
+
+const Img = styled.img`
+  width: 20vh;
+  padding: 10px;
+  margin: auto 90px;
+`
 export default Login;

@@ -7,6 +7,7 @@ import { actionCreators as userActions } from "../redux/modules/user";
 import { history } from "../redux/configureStore";
 
 import { Grid, Button } from "../elements";
+import OutDiv from "../elements/OutDiv";
 
 const Main = (props) => {
   const dispatch = useDispatch();
@@ -27,7 +28,8 @@ const Main = (props) => {
     return (
       <>
         <Header />
-        {post_list.map((p, idx) => {
+        <OutDiv>
+                  {post_list.map((p, idx) => {
           return <Post key={p._id} {...p} />;
         })}
 
@@ -38,15 +40,18 @@ const Main = (props) => {
             history.push("/write");
           }}
         ></Button>
+        </OutDiv>
       </>
     );
   }
   return (
     <>
       <Header />
-      {post_list.map((p, idx) => {
-        return <Post key={p._id} {...p} />;
-      })}
+        <OutDiv>
+                  {post_list.map((p, idx) => {
+          return <Post key={p._id} {...p} />;
+        })}
+      </OutDiv>
     </>
   );
 };

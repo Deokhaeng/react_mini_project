@@ -4,9 +4,7 @@ import axios from "axios";
 import { actionCreators as imageActions } from "./image";
 import moment from "moment";
 import { history } from "../configureStore";
-
 import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
-
 //Action
 const SET_POST = "SET_POST";
 // const GET_POST = "GET_POST";
@@ -14,18 +12,16 @@ const ADD_POST = "ADD_POST";
 const EDIT_POST = "EDIT_POST";
 const DELETE_POST = "DELETE_POST";
 // const LOADING = "LOADING";
-
 //Action creator
 const setPost = createAction(SET_POST, (_post) => ({ _post }));
 // const getPost = createAction(GET_POST, (post) => ({ post }));
-const addPost = createAction(ADD_POST, (post) => ({ post }));
+const addPost = createAction(ADD_POST, (post, id) => ({ post, id }));
 const editPost = createAction(EDIT_POST, (post_id, formData) => ({
   post_id,
   formData,
 }));
 const deletePost = createAction(DELETE_POST, (post_id) => ({ post_id }));
 // const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
-
 //initialStatef
 const initialState = {
   //리덕스가 사용할 initialState
@@ -33,28 +29,27 @@ const initialState = {
   // paging: { start: null, next: null, size: 3 }, //size: 몇 개 가져올거니?
   is_loading: false, //지금 로딩 중이니?(가지고 오는 중이니?)
 };
-
 const initialPost = {
   //게시글 하나당 기본적으로 들어갈 내용
+  id: null,
+  post_id: null,
   title: "ㅁㄴㅇㄹ",
   content: "점심머먹지",
   image: "https://ifh.cc/g/AOA4Wq.jpg",
   createdAt: moment().format("YYYY-MM-DD"), //알아서 이러한 형식으로 보여줌
 };
-
 //Middleware
 const getPostDB = () => {
   return function (dispatch, getState, { history }) {
     //form타입
     axios({
       method: "get",
+      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
       url: "http://3.38.253.146/write_modify/user/main",
     })
       .then((doc) => {
         const _post = doc.data.board;
-
         console.log(_post);
-
         dispatch(setPost(_post));
       })
       .catch((error) => {
@@ -62,19 +57,17 @@ const getPostDB = () => {
       });
   };
 };
-
-const addPostDB = (formData) => {
-  return async function (dispatch, getState, { history }) {
+const addPostDB = (formData, id) => {
+  return function (dispatch, getState, { history }) {
     let _post = {
       ...initialPost,
       formData,
       createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
     };
     console.log(_post);
-
-    await axios({
-      //token/title/content/url
+    axios({
       method: "post",
+      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
       url: "http://3.38.253.146/write_modify/user/postadd",
       data: formData,
       headers: {
@@ -83,13 +76,11 @@ const addPostDB = (formData) => {
       },
     })
       .then((doc) => {
+        // let post = { ..._post, id: doc.data.length + 1};
         console.log(doc);
-        console.log("포스트 성공");
-        dispatch(addPost(_post));
+        dispatch(addPost(_post, id));
         // dispatch(imageActions.setPreview(null));
-        // for (var pair of formData.entries()) {
-        //   console.log(pair[0] + ", " + pair[1]);
-        // }
+        window.location.reload();
         history.push("/main");
       })
       .catch((error) => {
@@ -97,7 +88,6 @@ const addPostDB = (formData) => {
       });
   };
 };
-
 const getOnePostDB = (_id) => {
   return function (dispatch, getState, { history }) {
     axios({
@@ -113,7 +103,6 @@ const getOnePostDB = (_id) => {
     });
   };
 };
-
 const editPostDB = (formData, post_id) => {
   return function (dispatch, getState) {
     // console.log(image)
@@ -129,48 +118,35 @@ const editPostDB = (formData, post_id) => {
     console.log(_post_idx);
     const _post = getState().post.list[_post_idx];
     console.log(_post_idx);
-
     console.log(_post);
-
-    const image = getState().image.preview;
-    console.log(image);
-
-    if (image == _post.image) {
-      //이미지가 동일할 시에 같은 이미지를 넣어줘라
-      let origin = {
-
-      }
-    } else {
-      //아니면 새롭게 넣어줘라
-      let post = {
-        ..._post,
-        formData, //patch 안됌
-      };
-      // `multipart/form-data; boundary=${formData._boundary}`
-      console.log(post);
-      axios({
-        method: "post",
-        url: `http://3.38.253.146/write_modify/user/postmodify/${post_id}`,
-        data: formData,
-        headers: {
-          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`, //여러종류의 type을 보낼 수 있는 형식
-          Authorization: `Bearer ${getCookie("is_login")}`,
-        },
+    let post = {
+      ..._post,
+      formData, //patch 안됌
+    };
+    // multipart/form-data; boundary=${formData._boundary}
+    console.log(post);
+    axios({
+      method: "post",
+      url: `http://3.38.253.146/write_modify/user/postmodify/${post_id}`,
+      data: formData,
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+        Authorization: `Bearer ${getCookie("is_login")}`,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        dispatch(editPost(post, post_id));
+        history.push("/main");
+        // window.opener.location.reload();
+        // history.push("/main");
+        window.location.reload();
       })
-        .then((res) => {
-          console.log(res);
-
-          dispatch(editPost(post, post_id));
-
-          history.push("/main");
-        })
-        .catch((error) => {
-          console.log("에러났어", error);
-        });
-    }
+      .catch((error) => {
+        console.log("에러났어", error);
+      });
   };
 };
-
 const deletePostDB = (post_id) => {
   return function (dispatch) {
     axios({
@@ -181,17 +157,14 @@ const deletePostDB = (post_id) => {
     })
       .then((res) => {
         console.log(res);
-
         dispatch(deletePost(post_id));
-
-        // document.location.href = "/main";
+        window.location.reload();
       })
       .catch((error) => {
         console.log(error);
       });
   };
 };
-
 //Reducer
 export default handleActions(
   {
@@ -210,7 +183,6 @@ export default handleActions(
         //     return acc;
         //   }
         // }, []);
-
         // draft.is_loading = false;
       }),
     // [GET_POST]: (state, action) =>
@@ -222,6 +194,7 @@ export default handleActions(
       produce(state, (draft) => {
         //
         draft.list.unshift(action.payload.post); //배열의 맨 앞에 붙이기
+        draft.id = action.payload.id;
         // console.log(draft);
         console.log(action.payload.post);
       }),
@@ -229,7 +202,6 @@ export default handleActions(
       produce(state, (draft) => {
         let idx = draft.list.findIndex((p) => p.id === action.payload.post_id); //인덱스 반환 => 딱 위치만 찾는 함수
         console.log(action);
-
         draft.list[idx] = { ...draft.list[idx], ...action.payload.post }; //갈아끼워줘라
       }),
     [DELETE_POST]: (state, action) =>
@@ -243,7 +215,6 @@ export default handleActions(
   },
   initialState
 );
-
 //action export
 const actionCreators = {
   addPost,
@@ -253,5 +224,4 @@ const actionCreators = {
   deletePostDB,
   getOnePostDB,
 };
-
 export { actionCreators };

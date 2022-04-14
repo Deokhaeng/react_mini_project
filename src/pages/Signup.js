@@ -1,5 +1,6 @@
 import React from "react";
 import _ from "lodash";
+import {Box} from '../elements'
 
 //Elements
 import { Grid, Text, Input, Button } from "../elements";
@@ -93,11 +94,13 @@ const Signup = (props) => {
       return window.alert("입력한 내용을 다시 확인해주세요!");
 
     dispatch(userActions.signupDB(id, password, password2));
+    history.replace('/main')
   };
 
   return (
     <React.Fragment>
-      <Grid padding="16px">
+      <Box margin='50px auto'>
+         <Grid padding="16px">
         <Text size="32px" bold>
           회원가입
         </Text>
@@ -164,6 +167,8 @@ const Signup = (props) => {
           }}
         ></Button>
       </Grid>
+      </Box>
+     
     </React.Fragment>
   );
 };

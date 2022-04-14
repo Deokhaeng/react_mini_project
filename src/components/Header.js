@@ -61,7 +61,7 @@ const Header = (props) => {
             <Button
               width="80px"
               text="로그인"
-              margin="3px"
+              margin="1% 0% 1% 80%"
               right
               _onClick={() => {
                 history.push("/login");
@@ -70,7 +70,7 @@ const Header = (props) => {
             <Button
               width="80px"
               text="회원가입"
-              margin="3px"
+              margin="1%"
               right
               _onClick={() => {
                 history.push("/signup");

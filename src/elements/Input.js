@@ -14,6 +14,8 @@ const Input = (props) => {
     keyUp,
     keyPress,
     chatName,
+    bold,
+    size
   } = props;
   //플레이스홀더, 라벨속성 지정가능, onChange:_onChange로 지정
   if (multiLine) {
@@ -21,6 +23,8 @@ const Input = (props) => {
       <Grid>
         {label && <Text margin="0px">{label}</Text>}
         <ElTextarea
+          bold={bold}
+          size={size}
           rows={10}
           value={value}
           placeholder={placeholder}
@@ -43,6 +47,8 @@ const Input = (props) => {
       <Grid>
         {label && <Text margin="0px">{label}</Text>}
         <ElInput
+          bold={bold}
+          size={size}
           type={type}
           placeholder={placeholder}
           onChange={_onChange}
@@ -63,6 +69,8 @@ Input.defaultProps = {
   _onChange: () => {},
   keyUp: () => {},
   keyPress: () => {},
+  bold: false,
+  size: false,
 };
 
 const ElTextarea = styled.textarea`
@@ -70,6 +78,9 @@ const ElTextarea = styled.textarea`
   width: 100%;
   padding: 12px 4px;
   box-sizing: border-box;
+  font-size: ${(props) => props.size};
+  font-weight: ${(props) => props.bold};
+  font-family: 'Jal_Haru';
 `;
 
 const ElInput = styled.input`
@@ -77,6 +88,9 @@ const ElInput = styled.input`
   width: 100%;
   padding: 12px 4px;
   box-sizing: border-box;
+  font-size: ${(props) => props.size};
+  font-weight: ${(props) => props.bold};
+  font-family: 'Jal_Haru';
 `;
 
 const ElChatName = styled.input`
@@ -84,6 +98,9 @@ const ElChatName = styled.input`
   width: 100px;
   padding: 12px 4px;
   box-sizing: border-box;
+  font-size: ${(props) => props.size};
+  font-weight: ${(props) => props.bold};
+  font-family: 'Jal_Haru';
 `;
 
 export default Input;

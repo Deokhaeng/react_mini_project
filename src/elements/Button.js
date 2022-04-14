@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import '../shared/App.css';
 
 const Button = (props) => {
   const {

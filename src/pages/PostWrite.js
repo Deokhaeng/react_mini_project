@@ -52,7 +52,6 @@ const PostWrite = (props) => {
   }, []);
 
   
-
   const selectFile = (e) => {
     const reader = new FileReader(); //사진이 인풋에 들어갔을 때 가져올 것이라서 selectFile안에 써준다.
     const file = fileInput.current.files[0];
@@ -106,7 +105,7 @@ const PostWrite = (props) => {
   };
   return (
     <React.Fragment>
-        <Box> 
+        <Boxes> 
         <Row>
           <One>
           <Grid padding="16px">
@@ -173,35 +172,43 @@ const PostWrite = (props) => {
 
         <Grid padding="16px">
           {is_edit ? (
-            <Button text="게시글 수정" _onClick={editPost} ></Button>
+            <Button text="게시글 수정" _onClick={editPost}></Button>
           ) : (
-            <Button text="게시글 작성" _onClick={addPost} ></Button>
+            <Button text="게시글 작성" _onClick={addPost}></Button>
           )}
         </Grid>
         </Two>
         
         </Row>
         
-      </Box>
+      </Boxes>
       
     </React.Fragment>
   );
 };
-
+const Boxes = styled.div`
+  max-width: 1000px;
+  height: 800px;
+  margin: 10px auto;
+  background-color: white;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0px 0px 10px 0px gray;
+  padding: 20px;
+`;
 const Row = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-
 `
 const One = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 35px;
-  margin-right: 30px;
+  /* margin-top: 35px; */
+  margin-right: 70px;
   height: 600px;
-  
+ 
 `
 const Two = styled.div`
   display: inline;
@@ -211,5 +218,6 @@ const Two = styled.div`
   width: 500px;
   
 `
+
 
 export default PostWrite;
