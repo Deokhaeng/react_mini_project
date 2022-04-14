@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import '../shared/App.css';
 
 const Box = (props) => {
   const { padding, margin, float, _onClick, children } = props;
@@ -28,17 +29,18 @@ Box.defaultProps = {
 
 //카드박스전체를 감싸는 박스
 const BoxDiv = styled.div`
-  max-width: 350px;
-  min-height: 60vh;
-  background-color: #2b2b2b;
+  max-width: 1000px;
+  height: 800px;
+  background-color: white;
   padding: ${(props) => props.padding};
   margin: ${(props) => props.margin};
   border-radius: 5px;
-  border: 1px solid #ffe05d;
-  box-shadow: #ffe05d 2.5px 2.5px 2.5px;
+  border: none;
+  box-shadow: 0px 0px 10px 0px gray;
   flex-wrap: wrap;
   flex-direction: row;
   ${(props) => (props.float ? `float:left;` : "")}
+  font-family: 'Cafe24Ohsquareair';
 `;
 
 export default Box;

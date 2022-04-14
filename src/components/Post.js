@@ -9,7 +9,8 @@ const Post = (props) => {
   const dispatch = useDispatch();
 
   const post_list = useSelector((state) => state.post.list);
-  // console.log(post_list)
+  console.log(post_list)
+
 
   const onClick = (e) => {
     e.stopPropagation();
@@ -50,7 +51,7 @@ const Post = (props) => {
         </Grid>
         <Grid is_flex width="auto" margin="0% 0% 0% 48%">
           {/* {props.is_me && ( */}
-          <Button
+          <Button 
             width="40px"
             padding="5px 0px"
             margin="0% 3px 0% 70%"

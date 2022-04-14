@@ -4,6 +4,8 @@ import { Route } from "react-router-dom";
 import { ConnectedRouter } from "connected-react-router";
 import { history } from "../redux/configureStore";
 
+import { useState, useRef, useCallback, useEffect } from "react";
+
 import Entrance from "../pages/Entrance";
 import Main from "../pages/Main";
 import Login from "../pages/Login";
@@ -14,9 +16,7 @@ import Grid from "../elements/Grid";
 
 import Chat from "../pages/Chat";
 
-
 function App() {
-
   return (
     <>
       <Grid>

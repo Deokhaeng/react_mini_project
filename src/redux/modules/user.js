@@ -2,7 +2,7 @@ import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
 
-import { setCookie, deleteCookie } from "../../shared/Cookie";
+import { setCookie, deleteCookie, getCookie } from "../../shared/Cookie";
 
 // Action Types(액션 타입)
 const LOG_OUT = "LOG_OUT";
@@ -13,7 +13,7 @@ const CHECK_DUP = "CHECK_DUP";
 // Action Creators(액션 생성 함수)
 const setUser = createAction(SET_USER, (token) => ({ token }));
 const logOut = createAction(LOG_OUT, (user) => ({ user }));
-const getUser = createAction(GET_USER, (user) => ({ user }));
+const getUser = createAction(GET_USER, (user_id) => ({ user_id }));
 const checkDup = createAction(CHECK_DUP, (id) => ({ id }));
 
 // InitialState(defaultprops와 같은 역할)
@@ -22,8 +22,8 @@ const initialState = {
   is_login: false, // 처음에는 로그인이 안되어 있을 테니까 false.
   is_check: false,
   id: null,
-  uid: null,
   token: null,
+  user_id: null,
 };
 
 // Middleware Actions(미들웨어 액션)
@@ -111,6 +111,27 @@ const idCheck = (id) => {
   };
 };
 
+const getUserDB = () => {
+  return function (dispatch) {
+    axios({
+      method: "get",
+      url: `http://3.38.253.146/user/me`,
+      headers: {
+        Authorization: `Bearer ${getCookie("is_login")}`,
+      },
+    })
+      .then((res) => {
+        const user_id = res.data.user.id;
+        console.log(res)
+
+        dispatch(getUser(user_id));
+      })
+      .catch((error) => {
+        console.log("로그인이 안돼있습니다.", error);
+      });
+  };
+};
+
 // Reducer
 export default handleActions(
   {
@@ -119,7 +140,6 @@ export default handleActions(
         draft.token = action.payload.token;
         console.log(draft.token);
         draft.is_login = true;
-        draft.uid = action.payload.id
         // creatAction을 사용할 때 액션 안에 type이 있고,
         // paylead가 있고, 이 안에 보낸 데이터가 담긴다.
       }),
@@ -131,7 +151,12 @@ export default handleActions(
         draft.is_login = false;
       }),
 
-    [GET_USER]: (state, action) => produce(state, (draft) => {}),
+    [GET_USER]: (state, action) =>
+      produce(state, (draft) => {
+        draft.user_id = action.payload.user_id;
+        draft.is_login = true;
+        console.log(draft.data);
+      }),
 
     [CHECK_DUP]: (state, action) =>
       produce(state, (draft) => {
@@ -150,6 +175,7 @@ const actionCreators = {
   logoutAction,
   signupDB,
   idCheck,
+  getUserDB,
 };
 
 export { actionCreators };

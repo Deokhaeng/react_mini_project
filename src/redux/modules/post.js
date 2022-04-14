@@ -5,7 +5,7 @@ import { actionCreators as imageActions } from "./image";
 import moment from "moment";
 import { history } from "../configureStore";
 
-import { getCookie } from "../../shared/Cookie";
+import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
 
 //Action
 const SET_POST = "SET_POST";
@@ -48,15 +48,9 @@ const getPostDB = () => {
     //form타입
     axios({
       method: "get",
-      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
       url: "http://3.38.253.146/write_modify/user/main",
     })
       .then((doc) => {
-        // const orderedDate = doc.data.board.map((a, i) => [a].map((b, l) => b.createdAt))
-
-        // const reverse = [...orderedDate].sort((a,b)=> new Date(b) - new Date(a))
-        // console.log(reverse)
-
         const _post = doc.data.board;
 
         console.log(_post);
@@ -70,8 +64,7 @@ const getPostDB = () => {
 };
 
 const addPostDB = (formData) => {
-  //앞에 쓰지 말자~~~~~
-  return function (dispatch, getState, { history }) {
+  return async function (dispatch, getState, { history }) {
     let _post = {
       ...initialPost,
       formData,
@@ -79,9 +72,9 @@ const addPostDB = (formData) => {
     };
     console.log(_post);
 
-    axios({
-      method: "post", //put으로 바꿔야 하나여?????????
-      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
+    await axios({
+      //token/title/content/url
+      method: "post",
       url: "http://3.38.253.146/write_modify/user/postadd",
       data: formData,
       headers: {
@@ -91,8 +84,12 @@ const addPostDB = (formData) => {
     })
       .then((doc) => {
         console.log(doc);
+        console.log("포스트 성공");
         dispatch(addPost(_post));
-
+        // dispatch(imageActions.setPreview(null));
+        // for (var pair of formData.entries()) {
+        //   console.log(pair[0] + ", " + pair[1]);
+        // }
         history.push("/main");
       })
       .catch((error) => {
@@ -101,7 +98,23 @@ const addPostDB = (formData) => {
   };
 };
 
-const editPostDB = (formData, post_id, title, content) => {
+const getOnePostDB = (_id) => {
+  return function (dispatch, getState, { history }) {
+    axios({
+      method: "get",
+      url: `http://3.38.253.146/write_modify/user/detail/${_id}`,
+    }).then((doc) => {
+      console.log(doc);
+      if (!doc.data) {
+        return;
+      }
+      const post = doc.data;
+      dispatch(setPost(post));
+    });
+  };
+};
+
+const editPostDB = (formData, post_id) => {
   return function (dispatch, getState) {
     // console.log(image)
     // if (!post_id) {
@@ -119,48 +132,28 @@ const editPostDB = (formData, post_id, title, content) => {
 
     console.log(_post);
 
-    // const _image = getState().image.preview;
-    // console.log(_image);
+    const image = getState().image.preview;
+    console.log(image);
 
-    // if (_image === _post.image) {
-    //   const same = {
-    //     ..._post,
-    //     image: _image,
-    //     title: title,
-    //     content: content,
-    //   };
-    //   axios({
-    //     method: "post",
-    //     url: `http://3.38.253.146/write_modify/user/postmodify/${post_id}`,
-    //     data: { same },
-    //     headers: {
-    //       // "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
-    //       Authorization: `Bearer ${getCookie("is_login")}`,
-    //     },
-    //   })
-    //     .then((res) => {
-    //       console.log(res);
+    if (image == _post.image) {
+      //이미지가 동일할 시에 같은 이미지를 넣어줘라
+      let origin = {
 
-    //       dispatch(editPost(same, post_id));
-
-    //       history.push("/main");
-    //     })
-    //     .catch((error) => {
-    //       console.log("에러났어", error);
-    //     });
-    // } else {
+      }
+    } else {
+      //아니면 새롭게 넣어줘라
       let post = {
         ..._post,
         formData, //patch 안됌
       };
-
+      // `multipart/form-data; boundary=${formData._boundary}`
       console.log(post);
       axios({
         method: "post",
         url: `http://3.38.253.146/write_modify/user/postmodify/${post_id}`,
         data: formData,
         headers: {
-          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`, //여러종류의 type을 보낼 수 있는 형식
           Authorization: `Bearer ${getCookie("is_login")}`,
         },
       })
@@ -174,6 +167,7 @@ const editPostDB = (formData, post_id, title, content) => {
         .catch((error) => {
           console.log("에러났어", error);
         });
+    }
   };
 };
 
@@ -189,6 +183,8 @@ const deletePostDB = (post_id) => {
         console.log(res);
 
         dispatch(deletePost(post_id));
+
+        // document.location.href = "/main";
       })
       .catch((error) => {
         console.log(error);
@@ -224,7 +220,9 @@ export default handleActions(
     //   }),
     [ADD_POST]: (state, action) =>
       produce(state, (draft) => {
+        //
         draft.list.unshift(action.payload.post); //배열의 맨 앞에 붙이기
+        // console.log(draft);
         console.log(action.payload.post);
       }),
     [EDIT_POST]: (state, action) =>
@@ -253,6 +251,7 @@ const actionCreators = {
   addPostDB,
   editPostDB,
   deletePostDB,
+  getOnePostDB,
 };
 
 export { actionCreators };
