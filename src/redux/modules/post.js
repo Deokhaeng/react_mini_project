@@ -86,9 +86,9 @@ const addPostDB = (formData) => {
       .then((doc) => {
         // let post = { ..._post, id: doc.data.length + 1};
         console.log(doc);
-        dispatch(addPost(_post));
+        // dispatch(addPost(_post));
         // dispatch(imageActions.setPreview(null));
-
+        console.log("포스트 작성 성공");
         history.push("/main");
       })
       .catch((error) => {

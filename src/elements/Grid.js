@@ -14,6 +14,7 @@ const Grid = (props) => {
     onscroll,
     children,
     _onClick,
+    align_self,
   } = props;
 
   const styles = {
@@ -30,7 +31,7 @@ const Grid = (props) => {
   };
   return (
     <React.Fragment>
-      <GridBox {...styles} onClick={_onClick}>
+      <GridBox {...styles} onClick={_onClick} align_self={align_self}>
         {children}
       </GridBox>
     </React.Fragment>
@@ -48,6 +49,7 @@ Grid.defaultProps = {
   margin: false,
   top: false,
   bg: false,
+  align_self: false,
 };
 //그리드
 //width, padding, margin, bg-color, is_flex(가로정렬), margin_left(왼쪽 오토 마진) value지정 가능
@@ -60,7 +62,7 @@ const GridBox = styled.div`
   ${(props) => (props.bg ? `background-color:${props.bg}` : "")}
   ${(props) =>
     props.is_flex
-      ? `display: flex; align-items: center; justify-content:space-between;`
+      ? `display: flex; align-items: center; justify-content:space-between ;`
       : ""}
   ${(props) =>
     props.fixed

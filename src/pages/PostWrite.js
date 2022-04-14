@@ -75,7 +75,7 @@ const PostWrite = (props) => {
 
     return (
       dispatch(postActions.addPostDB(formData)),
-      history.push("/main"),
+      // history.push("/main"),
       console.log(formData)
     );
   };
