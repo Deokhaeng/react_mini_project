@@ -1,70 +1,48 @@
-# Getting Started with Create React App
+# 랜선 떡볶이단
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[시연 영상 보기]().
 
-## Available Scripts
+## 목차
 
-In the project directory, you can run:
+1. [프로젝트 설명](프로젝트 설명)
+2. [사용 패키지](Package)
+3. [역할 분담](역할 분담)
+4. [에러 정리](에러 정리)
 
-### `npm start`
+## 프로젝트 설명
+떡볶이 맛집을 소개하고 리뷰하는 커뮤니티
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🛠Package
+*State Management: redux, react-redux
+*Style Work: styled-components
+*Route: react-router-dom, connected-react-router
+*Middleware: redux-thunk, redux-logger
+*History: history
+*Soket: socket.io, socket.io-client
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 💪역할 분담
+이덕행 : 로그인, 회원가입, 메인 페이지, 입장 페이지
+최정원 : 게시글 작성, 수정, 삭제
+한유정 : 엘리먼트, 상세 페이지
+공동작업 : 실시간채팅, CSS
 
-### `npm test`
+## 🔎에러 정리
+이덕행
+1. 로그인 시 아이디 비번을 입력할 때 어떤 값을 넣어도 서버에서 토큰을 보내주는 문제 발생
+=> Test API로 확인 했을 때 문제가 없어서 포스트 맨으로 확인 했을 때 서버에서 알려준 API가 문제가 있다는 것을 알게됨.
+=> API 경로문제 / 문제 해결.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+###한유정
+1. 메인페이지에서, 해당유저에게만 수정/제거버튼 노출
+=> user_id와 props의 아이디를 각각 읽어오지 못해 발생하는 문제
+=> 리덕스, 부모컴포넌트 요소 콘솔로그를 통해 확인하여 해결
+2. PostDetail에서, 상세페이지 노출 시 uri와 post_id매칭안되는 문제
+=> 엄격한 비교를 유형변환비교로 변경하여 해결
 
-### `npm run build`
+###최정원
+1. 이미지 수정 미들웨어 작성 시 axios가 전혀 발생하지 않은 문제 발생
+formData 가 get/post에만 적용된다는 것을 발견하고 기존 method였던 patch -> post로 변경. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+###공동작업
+1. 소켓 기능 구현 시 백엔드와 연결이 되지 않았음
+=> 프론트쪽에 백엔드 서버 주소를 제대로 넣지 않아 생겼던 문제였음.
