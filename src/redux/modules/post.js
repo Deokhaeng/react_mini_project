@@ -36,6 +36,8 @@ const initialState = {
 
 const initialPost = {
   //게시글 하나당 기본적으로 들어갈 내용
+  id:null,
+  post_id:null,
   title: "ㅁㄴㅇㄹ",
   content: "점심머먹지",
   image: "https://ifh.cc/g/AOA4Wq.jpg",
@@ -86,9 +88,9 @@ const addPostDB = (formData) => {
       .then((doc) => {
         // let post = { ..._post, id: doc.data.length + 1};
         console.log(doc);
-        dispatch(addPost(_post));
+        // dispatch(addPost(_post));
         // dispatch(imageActions.setPreview(null));
-
+        console.log("포스트 작성 성공");
         history.push("/main");
       })
       .catch((error) => {
@@ -151,7 +153,7 @@ const editPostDB = (formData, post_id) => {
 
         dispatch(editPost(post, post_id));
 
-        // history.push('/main')
+        history.push("/main");
       })
       .catch((error) => {
         console.log("에러났어", error);
@@ -210,6 +212,7 @@ export default handleActions(
       produce(state, (draft) => {
         //
         draft.list.unshift(action.payload.post); //배열의 맨 앞에 붙이기
+        draft.id = action.payload.id;
         // console.log(draft);
         console.log(action.payload.post);
       }),

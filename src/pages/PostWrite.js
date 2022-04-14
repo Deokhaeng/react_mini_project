@@ -1,8 +1,7 @@
 import React from "react";
 import { MdClear } from "react-icons/md";
 import { Grid, Text, Button, Image, Input, Box } from "../elements";
-import Upload from "../shared/Upload";
-import axios from "axios";
+import styled from 'styled-components';
 
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post";
@@ -19,32 +18,40 @@ const PostWrite = (props) => {
   const preview = useSelector((state) => state.image.preview);
   // console.log(preview) //추가페이지에서 리덕스값 초기화!! //확인완료
   const post_list = useSelector((state) => state.post.list); //최종 리스트
-  // console.log(post_list);
+  console.log(post_list);
+  console.log(props)
 
-  const post_id = props.match.params.post_id;
+  const post_id = props.match.params.post_id;  //post_id; 백에서 기본숫자로 넣은건가여???
   console.log(post_id); //확인완료
 
   const is_edit = post_id ? true : false;
-  console.log(is_edit); //확인완료
+  console.log(is_edit); //확인완료 
 
   let _post = is_edit ? post_list.find((p) => p.post_id == post_id) : null;
   console.log(_post); //확인완료
 
   const [title, setTitle] = React.useState(_post ? _post.title : "");
-  console.log(title);
+  // console.log(title);
   const [content, setContent] = React.useState(_post ? _post.content : "");
   // console.log(contents)
 
-  React.useEffect(() => {
-    //리렌더링 체크 issue
+  const post_idx = useSelector((state)=>state.post.list.findIndex((p) => p.post_id == post_id));
+  console.log(post_idx)
+  const imageDB = useSelector((state)=>state.post.list[post_idx])
+  console.log(imageDB)
 
+  console.log(_post)
+  React.useEffect(() => {
     if (is_edit) {
       //setPreview 링크 가져오자
-      dispatch(imageActions.setPreview(_post.image)); //맞는디??
+      dispatch(imageActions.setPreview(_post.image)); 
     } else {
       dispatch(imageActions.setPreview(null));
     }
+
   }, []);
+
+  
 
   const selectFile = (e) => {
     const reader = new FileReader(); //사진이 인풋에 들어갔을 때 가져올 것이라서 selectFile안에 써준다.
@@ -62,7 +69,7 @@ const PostWrite = (props) => {
       window.alert("파일을 선택해주세요!");
       return;
     }
-
+    
     const file = fileInput.current.files[0];
     console.log(file);
 
@@ -73,10 +80,12 @@ const PostWrite = (props) => {
     formData.append("content", content);
     console.log("formData", formData);
 
+    for (var pair of formData.entries()) { console.log(pair[0] + ", " + pair[1]); }
+
     return (
       dispatch(postActions.addPostDB(formData)),
-      history.push("/main"),
-      console.log(formData)
+      history.push("/main")
+      // console.log(formData)
     );
   };
 
@@ -89,44 +98,19 @@ const PostWrite = (props) => {
     formData.append("image", file);
     formData.append("title", title);
     formData.append("content", content);
-    // formData.append('post_id', post_id);
+    formData.append('post_id', post_id);
     console.log("formData", formData);
 
-    dispatch(postActions.editPostDB(formData, post_id));
-    // history.push('/main')
+    dispatch(postActions.editPostDB(formData, post_id, title, content));
+    history.push('/main')
   };
-
-  // if (!is_login) {
-  //   return (
-  //     <Grid margin="100px 0px" padding="16px" center>
-  //       <Text size="32px" bold>
-  //         앗 잠깐!
-  //       </Text>
-  //       <Text size="16px">로그인 후에 글을 쓸 수 있슴당!</Text>
-  //       <Button
-  //         bg="#6A568B"
-  //         _onClick={() => {
-  //           history.replace("/login");
-  //         }}
-  //         text="로그인 하러 가기"
-  //       ></Button>
-  //     </Grid>
-  //   );
-  // }
-
   return (
     <React.Fragment>
-      <Box>
-        <Grid padding="16px">
-          <Grid margin="0% 0% 0% 95%">
-            <MdClear
-              size={30}
-              onClick={() => {
-                history.push("/main");
-              }}
-            />
-          </Grid>
-
+        <Box> 
+        <Row>
+          <One>
+          <Grid padding="16px">
+        
           <Grid is_flex>
             <Text size="30px" bold>
               {is_edit ? "게시글 수정" : "게시글 작성"}
@@ -153,7 +137,18 @@ const PostWrite = (props) => {
             src={preview ? preview : "https://ifh.cc/g/g0oyvr.png"} //안가져와짐...
           ></Image>
         </Grid>
-        <Grid padding="16px">
+        </One>
+        
+        <Two>
+           <Grid margin="0% 0% 0% 95%">
+            <MdClear
+              size={30}
+              onClick={() => {
+                history.push("/main");
+              }}
+            />
+          </Grid>
+          <Grid padding="16px">
           <Input
             value={title}
             label="게시글 제목"
@@ -183,9 +178,39 @@ const PostWrite = (props) => {
             <Button text="게시글 작성" _onClick={addPost}></Button>
           )}
         </Grid>
+        </Two>
+        
+        </Row>
+        
       </Box>
+      
     </React.Fragment>
   );
 };
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+`
+const One = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 35px;
+  margin-right: 30px;
+  height: 600px;
+  
+`
+const Two = styled.div`
+  display: inline;
+  flex-direction: column;
+  justify-content: center;
+  height: 600px;
+  width: 500px;
+  
+`
+
 
 export default PostWrite;
