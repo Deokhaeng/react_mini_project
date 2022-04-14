@@ -1,4 +1,3 @@
-
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from "axios";
@@ -6,31 +5,28 @@ import { actionCreators as imageActions } from "./image";
 import moment from "moment";
 import { history } from "../configureStore";
 
-// import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
-// import { MdDocumentScanner } from "react-icons/md";
+import { getCookie, setCookie, deleteCookie } from "../../shared/Cookie";
 
-//Actions
-const POST_DETAIL = "POST_DETAIL";
+//Action
 const SET_POST = "SET_POST";
-const GET_POST = "GET_POST";
+// const GET_POST = "GET_POST";
 const ADD_POST = "ADD_POST";
 const EDIT_POST = "EDIT_POST";
 const DELETE_POST = "DELETE_POST";
+// const LOADING = "LOADING";
 
-//Action Creator
-const getPostDetail = (post) => ({ type: POST_DETAIL, post });
+//Action creator
 const setPost = createAction(SET_POST, (_post) => ({ _post }));
 // const getPost = createAction(GET_POST, (post) => ({ post }));
 const addPost = createAction(ADD_POST, (post) => ({ post }));
-const editPost = createAction(EDIT_POST, (post_id, post) => ({
+const editPost = createAction(EDIT_POST, (post_id, formData) => ({
   post_id,
-  post,
+  formData,
 }));
 const deletePost = createAction(DELETE_POST, (post_id) => ({ post_id }));
 // const loading = createAction(LOADING, (is_loading) => ({ is_loading }));
 
-
-//Initial State
+//initialStatef
 const initialState = {
   //리덕스가 사용할 initialState
   list: [], //post_list가 아닌 이유? 이미 state.post.list로 가져올 거기 때문에 post는 생략!
@@ -40,147 +36,143 @@ const initialState = {
 
 const initialPost = {
   //게시글 하나당 기본적으로 들어갈 내용
-  title: "",
-  content: "",
+  id:null,
+  post_id:null,
+  title: "ㅁㄴㅇㄹ",
+  content: "점심머먹지",
   image: "https://ifh.cc/g/AOA4Wq.jpg",
-  createAt: moment().format("YYYY-MM-DD"), //알아서 이러한 형식으로 보여줌
+  createdAt: moment().format("YYYY-MM-DD"), //알아서 이러한 형식으로 보여줌
 };
 
 //Middleware
-
-const getPostDetailDB = (post_id, title, image_url, contents, createdAt) => {
-  return function (dispatch, getState, { history }) {
-    axios({
-      method: "get",
-      url: `/detail/${post_id}`,
-      data: {
-        title: title,
-        image_url: image_url,
-        contents: contents,
-        post_id: post_id,
-        createdAt: createdAt,
-      },
-    })
-      .get("")
-      .then(function (res) {
-        dispatch(getPostDetail(res.data));
-        console.log("성공");
-      })
-      .catch(function (err) {
-        console.lot(err);
-      });
-  };
-};
-
-// const getOnePostDB = (post_id) => {
-//     return function (dispatch) {
-//         axios
-//         .get(`detail/${post_id}`)
-//         .then((res) => {
-//             dispatch(getPostDetail(res.data));
-//         })
-//         .catch((err) => {
-//             console.lot(err);
-//         });
-//     };
-// };
 const getPostDB = () => {
-  return function (dispatch) {
-    let post_list = [];
+  return function (dispatch, getState, { history }) {
+    //form타입
     axios({
       method: "get",
-      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
+      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
+      url: "http://3.38.253.146/write_modify/user/main",
     })
       .then((doc) => {
-        console.log(doc)
-        const _post = doc.data;
-        console.log(_post)
+        const _post = doc.data.board;
 
-        // dispatch(loading(true));
+        console.log(_post);
+
         dispatch(setPost(_post));
-        // console.log(res);
-        // console.log(post_list)
       })
       .catch((error) => {
-        console.log('에러났다!', error);
+        console.log("에러났다!", error);
       });
   };
 };
 
-const addPostDB = (title, content, image) => {
-  return function (dispatch) {
+const addPostDB = (formData) => {
+  return function (dispatch, getState, { history }) {
     let _post = {
       ...initialPost,
-      title: title,
-      content: content,
+      formData,
+      createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
     };
+    console.log(_post);
+
     axios({
       method: "post",
-      url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
-      data: _post,
+      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
+      url: "http://3.38.253.146/write_modify/user/postadd",
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${getCookie("is_login")}`,
+      },
     })
       .then((doc) => {
-        let post = { ..._post, id: doc.data.length + 1};
+        // let post = { ..._post, id: doc.data.length + 1};
         console.log(doc);
-        dispatch(addPost(post));
-        dispatch(imageActions.setPreview(null));
-
-        history.push('/main')
+        // dispatch(addPost(_post));
+        // dispatch(imageActions.setPreview(null));
+        console.log("포스트 작성 성공");
+        history.push("/main");
       })
       .catch((error) => {
-        console.log('포스트 작성 실패!', error);
+        console.log("포스트 작성 실패!", error);
       });
   };
 };
 
-const getOnePostDB = (id) => {
+const getOnePostDB = (_id) => {
   return function (dispatch, getState, { history }) {
     axios({
       method: "get",
-      url: "",
+      url: `http://3.38.253.146/write_modify/user/detail/${_id}`,
     }).then((doc) => {
       console.log(doc);
       if (!doc.data) {
         return;
       }
-      dispatch(setPost(id));
+      const post = doc.data;
+      dispatch(setPost(post));
     });
   };
 };
 
-const editPostDB = (title, contents) => {
-  return function (dispatch) {
+const editPostDB = (formData, post_id) => {
+  return function (dispatch, getState) {
+    // console.log(image)
+    // if (!post_id) {
+    //   console.log("게시물 정보가 없어요!");
+    //   return;
+    // const _image = getState().image.preview;
+    // .findIndex((p) => p.id === post_id);
+    console.log(post_id);
+    const _post_idx = getState().post.list.findIndex(
+      (p) => p.post_id == post_id
+    );
+    console.log(_post_idx);
+    const _post = getState().post.list[_post_idx];
+    console.log(_post_idx);
+
+    console.log(_post);
+
+    let post = {
+      ..._post,
+      formData, //patch 안됌
+    };
+    // `multipart/form-data; boundary=${formData._boundary}`
+    console.log(post);
     axios({
-      method: "patch",
-      url: "https://reqres.in/api/users/2",
-      data: {
-        name: title,
-        job: contents,
+      method: "post",
+      url: `http://3.38.253.146/write_modify/user/postmodify/${post_id}`,
+      data: formData,
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+        Authorization: `Bearer ${getCookie("is_login")}`,
       },
     })
       .then((res) => {
         console.log(res);
-        // const post = {...initialPost, title: title, contents: contents}
-        dispatch(editPost(title, contents));
 
-        // history.push('/main')
+        dispatch(editPost(post, post_id));
+
+        history.push("/main");
       })
       .catch((error) => {
-        console.log(error);
+        console.log("에러났어", error);
       });
   };
 };
 
-const deletePostDB = (post) => {
+const deletePostDB = (post_id) => {
   return function (dispatch) {
     axios({
       method: "delete",
-      url: "https://reqres.in/api/users/2",
-      data: {},
+      url: `http://3.38.253.146/write_modify/user/delete/${post_id}`,
+      data: { post_id },
+      headers: { Authorization: `Bearer ${getCookie("is_login")}` },
     })
       .then((res) => {
         console.log(res);
-        dispatch(deletePost());
+
+        dispatch(deletePost(post_id));
 
         // document.location.href = "/main";
       })
@@ -189,43 +181,10 @@ const deletePostDB = (post) => {
       });
   };
 };
-const setPostDB = () => {
-  return function (dispatch) {
-    // let post_list = [];
-    axios({
-      method: "get",
-      // url: "https://6252ffae7f7fa1b1ddec36b3.mockapi.io/users/1/addpost",
-      url: "http://3.38.253.146/write_modify/user/main",
-    })
-      .then((doc) => {
-        console.log(doc);
-        const _post = doc.data.board;
-        const image = doc.data.board.image;
-        const image_url = `http://3.38.253.146/${image}`;
-        console.log(image);
-        console.log(image_url);
-        console.log(_post);
-        // dispatch(loading(true));
-        dispatch(setPost(_post));
-        // console.log(res);
-        // console.log(post_list)
-      })
-      .catch((error) => {
-        console.log("에러났다!", error);
-      });
-  };
-};
 
 //Reducer
 export default handleActions(
   {
-    [POST_DETAIL]: (state, action) => {
-      produce(state, (draft) => (draft.list = { ...state, post: action.post }));
-    },
-    [DELETE_POST]: (state, action) => 
-    produce(state, (draft) => { 
-      draft.list = draft.list.filter((p) => p.id !== action.payload.post_id); //배열을 반환  
-    }),
     [SET_POST]: (state, action) =>
       produce(state, (draft) => {
         draft.list = action.payload._post; //원래 리스트를 post_list로 갈아끼울거야~~
@@ -244,15 +203,16 @@ export default handleActions(
 
         // draft.is_loading = false;
       }),
-    [GET_POST]: (state, action) =>
-      produce(state, (draft) => {
-        // console.log(action.payload.post);
-        draft.post = action.payload.post;
-      }),
+    // [GET_POST]: (state, action) =>
+    //   produce(state, (draft) => {
+    //     // console.log(action.payload.post);
+    //     draft.post = action.payload.post;
+    //   }),
     [ADD_POST]: (state, action) =>
       produce(state, (draft) => {
         //
         draft.list.unshift(action.payload.post); //배열의 맨 앞에 붙이기
+        draft.id = action.payload.id;
         // console.log(draft);
         console.log(action.payload.post);
       }),
@@ -267,21 +227,22 @@ export default handleActions(
       produce(state, (draft) => {
         draft.list = draft.list.filter((p) => p.id !== action.payload.post_id); //배열을 반환
       }),
-
+    // [LOADING]: (state, action) =>
+    //   produce(state, (draft) => {
+    //     draft.is_loading = action.payload.is_loading;
+    //   }),
   },
   initialState
 );
 
-//exporting
+//action export
 const actionCreators = {
-  setPostDB,
-  getPostDetail,
+  addPost,
   getPostDB,
   addPostDB,
-  getOnePostDB,
-  deletePostDB,
   editPostDB,
-  getPostDetailDB,
+  deletePostDB,
+  getOnePostDB,
 };
 
 export { actionCreators };
