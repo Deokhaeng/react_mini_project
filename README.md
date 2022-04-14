@@ -1,6 +1,6 @@
 # 랜선 떡볶이단 (mini project)
 
-[시연 영상 보기](https://www.favicon-generator.org/)
+[시연 영상 보기](https://youtu.be/iqgtT6dnpJs)
 
 ## 목차
 
