@@ -13,12 +13,12 @@
 떡볶이 맛집을 소개하고 리뷰하는 커뮤니티
 
 ## 🛠Package
-*State Management: redux, react-redux
-*Style Work: styled-components
-*Route: react-router-dom, connected-react-router
-*Middleware: redux-thunk, redux-logger
-*History: history
-*Soket: socket.io, socket.io-client
+-State Management: redux, react-redux
+-Style Work: styled-components
+-Route: react-router-dom, connected-react-router
+-Middleware: redux-thunk, redux-logger
+-History: history
+-Soket: socket.io, socket.io-client
 
 ## 💪역할 분담
 이덕행 : 로그인, 회원가입, 메인 페이지, 입장 페이지
