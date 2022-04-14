@@ -14,16 +14,24 @@
 
 ## 🛠Package
 -State Management: redux, react-redux
+
 -Style Work: styled-components
+
 -Route: react-router-dom, connected-react-router
+
 -Middleware: redux-thunk, redux-logger
+
 -History: history
+
 -Soket: socket.io, socket.io-client
 
 ## 💪역할 분담
 이덕행 : 로그인, 회원가입, 메인 페이지, 입장 페이지
+
 최정원 : 게시글 작성, 수정, 삭제
+
 한유정 : 엘리먼트, 상세 페이지
+
 공동작업 : 실시간채팅, CSS
 
 ## 🔎에러 정리
