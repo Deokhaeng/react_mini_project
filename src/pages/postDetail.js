@@ -24,17 +24,9 @@ const Detail = (props) => {
   console.log(post);
 
   React.useEffect(() => {
-    dispatch(postActions.getPostDB(postNum));
+    dispatch(postActions.getPostDB());
   }, []);
-  return (
-    <React.Fragment>
-      {post && (
-        <Post
-          {...post}
-          // is_me={post.user_info.user_id === user_info?.uid}
-        />
-      )}
-    </React.Fragment>
-  );
+
+  return <React.Fragment>{post && <Post {...post} />}</React.Fragment>;
 };
 export default Detail;

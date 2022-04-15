@@ -30,7 +30,7 @@ Box.defaultProps = {
 const BoxDiv = styled.div`
   max-width: 350px;
   min-height: 60vh;
-  background-color: #2b2b2b;
+  background-color: white;
   padding: ${(props) => props.padding};
   margin: ${(props) => props.margin};
   border-radius: 5px;

@@ -8,9 +8,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as postActions } from "../redux/modules/post";
 import { actionCreators as imageActions } from "../redux/modules/image";
 
-const PostWrite = (props) => {
+const PostEdit = (props) => {
   const fileInput = React.useRef();
   const uploading = useSelector((state) => state.image.uploading);
+  const is_postEdit = useSelector((state) => state.image.is_postEdit);
+  console.log(is_postEdit);
 
   const { history } = props;
   const dispatch = useDispatch();
@@ -21,6 +23,8 @@ const PostWrite = (props) => {
   const post_list = useSelector((state) => state.post.list); //최종 리스트
   console.log(post_list);
 
+  const post_list_2 = useSelector((state) => state.post.list);
+  console.log(post_list_2);
   const post_id = props.match.params.post_id;
   console.log(post_id); //확인완료
 
@@ -37,13 +41,7 @@ const PostWrite = (props) => {
 
   React.useEffect(() => {
     //리렌더링 체크 issue
-
-    if (is_edit) {
-      //setPreview 링크 가져오자
-      dispatch(imageActions.setPreview(_post.image)); //맞는디??
-    } else {
-      dispatch(imageActions.setPreview(null));
-    }
+    dispatch(imageActions.setPreview(_post.image));
   }, []);
 
   const selectFile = (e) => {
@@ -57,30 +55,6 @@ const PostWrite = (props) => {
     };
   };
 
-  const addPost = () => {
-    if (!fileInput.current || fileInput.current.files.length === 0) {
-      window.alert("파일을 선택해주세요!");
-      return;
-    }
-
-    const file = fileInput.current.files[0];
-    console.log(file);
-
-    const formData = new FormData();
-
-    formData.append("image", file);
-    formData.append("title", title);
-    formData.append("content", content);
-    console.log("formData", formData);
-
-    return (
-      dispatch(postActions.addPostDB(formData)),
-      // history.replace("/main"),
-      // window.location.reload(),
-      console.log(formData)
-    );
-  };
-
   const editPost = () => {
     const file = fileInput.current.files[0];
     console.log(file);
@@ -90,12 +64,13 @@ const PostWrite = (props) => {
     formData.append("image", file);
     formData.append("title", title);
     formData.append("content", content);
-    // formData.append('post_id', post_id);
     console.log("formData", formData);
 
     dispatch(postActions.editPostDB(formData, post_id));
+    // history.push('/main')
   };
 
+  console.log(post_list);
   return (
     <React.Fragment>
       <Box>
@@ -111,7 +86,7 @@ const PostWrite = (props) => {
 
           <Grid is_flex>
             <Text size="30px" bold>
-              {is_edit ? "게시글 수정" : "게시글 작성"}
+              {"게시글 수정"}
             </Text>
           </Grid>
 
@@ -130,10 +105,7 @@ const PostWrite = (props) => {
             </Text>
           </Grid>
 
-          <Image
-            shape="rectangle"
-            src={preview ? preview : "https://ifh.cc/g/g0oyvr.png"} //안가져와짐...
-          ></Image>
+          <Image shape="rectangle" src={preview}></Image>
         </Grid>
         <Grid padding="16px">
           <Input
@@ -159,15 +131,11 @@ const PostWrite = (props) => {
         </Grid>
 
         <Grid padding="16px">
-          {is_edit ? (
-            <Button text="게시글 수정" _onClick={editPost}></Button>
-          ) : (
-            <Button text="게시글 작성" _onClick={addPost}></Button>
-          )}
+          <Button text="게시글 수정" _onClick={editPost}></Button>
         </Grid>
       </Box>
     </React.Fragment>
   );
 };
 
-export default PostWrite;
+export default PostEdit;

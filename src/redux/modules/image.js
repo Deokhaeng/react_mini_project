@@ -15,6 +15,7 @@ const initialState = {
   image_url: "http://via.placeholder.com/400x300",
   uploading: false,
   preview: null,
+  is_postEdit: false,
 };
 
 // reducer
@@ -28,6 +29,7 @@ export default handleActions(
     [SET_PREVIEW]: (state, action) =>
       produce(state, (draft) => {
         draft.preview = action.payload.preview;
+        draft.is_postEdit = true;
       }),
   },
   initialState
